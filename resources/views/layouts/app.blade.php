@@ -29,9 +29,11 @@
                 <div>
                     <span class="block font-semibold">{{ Auth::user()->name }}</span>
                     <span class="text-sm text-gray-500">{{ ucfirst(Auth::user()->role) }}</span>
-                    <!-- Logout Link -->
-                    <a href="{{ route('logout') }}" class="text-sm text-gray-500 hover:text-red-600 mt-1 block">Logout</a>
-                </div>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit">Logout</button>
+                    </form>
+                                    </div>
             </div>
             <ul class="space-y-2 flex-1 overflow-y-auto p-3">
                 <li>
@@ -95,6 +97,15 @@
                     >
                     <i class="fa-solid fa-star"></i>
                                                       <span class="ml-3">Ulasan </span>
+                    </a>
+                </li>
+                <li>
+                    <a
+                        href="{{ route('absensi.index') }}"
+                        class="block px-6 py-3 rounded-lg text-gray-700 bg-gradient-to-r from-white to-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 ease-in-out"
+                    >
+                    <i class="fa-solid fa-star"></i>
+                    <span class="ml-3">Absensi </span>
                     </a>
                 </li>
             </ul>
