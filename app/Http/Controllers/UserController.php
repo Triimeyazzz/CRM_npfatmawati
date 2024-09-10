@@ -13,7 +13,7 @@ class UserController extends Controller
 {
     $search = request('search'); // Get the search input
     $users = User::when($search, function ($query, $search) {
-        return $query->where('name', 'like', "%{$search}%")
+        return $query->where('name', 'like', "%{$search}%")  
                      ->orWhere('email', 'like', "%{$search}%");
     })->get();
 
@@ -21,14 +21,12 @@ class UserController extends Controller
     $roleCounts = User::selectRaw('role, COUNT(*) as count')->groupBy('role')->pluck('count', 'role');
     $selectedRole = request('role');
 
-    return view('users.index', [
+return view('users.index', [
         'users' => $users,
         'roles' => $roles,
         'roleCounts' => $roleCounts,
         'selectedRole' => $selectedRole,
-        'auth' => [
-            'user' => auth()->user(),
-        ],
+        'user' => auth()->user()
     ]);
 }
 

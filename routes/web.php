@@ -7,11 +7,12 @@ use App\Http\Controllers\AuthenticatedSessionController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\TryOutController;
-use App\Http\Controllers\PembayaranController; 
-use App\Http\Controllers\CicilanController; 
+use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\CicilanController;
 use App\Http\Controllers\AdminUlasanController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController as AuthAuthenticatedSessionController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -20,12 +21,12 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('login', [AuthenticatedSessionController::class, 'showLoginForm'])->name('login');
-Route::post('login', [AuthenticatedSessionController::class, 'login']);
-Route::post('logout', [AuthenticatedSessionController::class, 'logout'])->name('logout');
+Route::get('login', [AuthAuthenticatedSessionController::class, 'showLoginForm'])->name('login');
+Route::post('login', [AuthAuthenticatedSessionController::class, 'login']);
+Route::post('logout', [AuthAuthenticatedSessionController::class, 'logout'])->name('logout');
 
-Route::get('register', [AuthenticatedSessionController::class, 'showRegistrationForm'])->name('register');
-Route::post('register', [AuthenticatedSessionController::class, 'register']);
+Route::get('register', [AuthAuthenticatedSessionController::class, 'showRegistrationForm'])->name('register');
+Route::post('register', [AuthAuthenticatedSessionController::class, 'register']);
 
 Route::middleware('auth')->group(function () {
     Route::post('/events', [EventController::class, 'store']);
@@ -56,7 +57,7 @@ Route::middleware('auth')->group(function () {
     });
     Route::get('adminsiswa/qrcode/{id}', [SiswaController::class, 'cetakqr'])->name('adminsiswa.qrcode');
     Route::get('adminsiswa/qrcode/download/{id}', [SiswaController::class, 'downloadQrCode'])->name('adminsiswa.qrcode.download');
-    
+
     Route::get('tryout', [TryOutController::class, 'index'])->name('tryout.index');
     Route::get('tryout/{siswa}/progress', [TryOutController::class, 'progress'])->name('tryout.progress');
 
