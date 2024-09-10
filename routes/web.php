@@ -12,14 +12,20 @@ use App\Http\Controllers\CicilanController;
 use App\Http\Controllers\AdminUlasanController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HomeController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/home'); 
 });
-
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/home/about', [HomeController::class, 'about'])->name('home.about');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
 Route::get('login', [AuthenticatedSessionController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthenticatedSessionController::class, 'login']);
 Route::post('logout', [AuthenticatedSessionController::class, 'logout'])->name('logout');

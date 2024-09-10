@@ -1,4 +1,3 @@
-<!-- resources/views/absensi/scan.blade.php -->
 @extends('layouts.app')
 
 @section('content')
@@ -20,13 +19,16 @@
         </div>
         
         <!-- Increase size of the camera feed -->
-        <div id="reader" style="width: 400px; height: 400px;"></div> <!-- Increased dimensions -->
+        <div id="reader" style="width: 500px; height: 500px;"></div> <!-- Increased dimensions -->
         
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Submit</button>
     </form>
 
     <!-- Success message for scan -->
     <div id="scan-message" class="mt-4 text-green-500"></div>
+
+    <!-- Audio element for scan success sound -->
+    <audio id="scan-sound" src="{{ asset('/audio/onisan.mp3') }}" preload="auto"></audio>
 </div>
 
 <!-- Load the Html5Qrcode library -->
@@ -36,6 +38,7 @@
     document.addEventListener("DOMContentLoaded", function () {
         const readerElement = document.getElementById("reader");
         const scanMessageElement = document.getElementById("scan-message");
+        const scanSound = document.getElementById("scan-sound");
 
         if (readerElement) {
             // Initialize the Html5Qrcode instance
@@ -61,6 +64,9 @@
     function onScanSuccess(decodedText, decodedResult) {
         // Set the scanned ID in the input field
         document.getElementById('id').value = decodedText;
+
+        // Play the scan success sound
+        document.getElementById('scan-sound').play();
 
         // Show success message
         document.getElementById('scan-message').innerText = "QR Code scanned successfully!";
