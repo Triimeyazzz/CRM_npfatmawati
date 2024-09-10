@@ -12,6 +12,8 @@ use App\Http\Controllers\CicilanController;
 use App\Http\Controllers\AdminUlasanController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\KirimEmailController;
+use App\Http\Controllers\PdfController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController as AuthAuthenticatedSessionController;
 
 Route::get('/', function () {
@@ -77,6 +79,8 @@ Route::delete('/pembayaran/cicilan/{id}', [PembayaranController::class, 'destroy
 Route::post('/pembayaran/{id}/cancel', [PembayaranController::class, 'cancel'])->name('pembayaran.cancel');
 Route::post('/pembayaran/{id}/cancel-new', [PembayaranController::class, 'cancelNew'])->name('pembayaran.cancelNew');
 
+Route::get('kirim-email', KirimEmailController::class)->name('kirimEmail');
+
 
 Route::get('/cicilan', [CicilanController::class, 'index'])->name('cicilan.index');
 Route::post('/cicilan', [CicilanController::class, 'store'])->name('cicilan.store');
@@ -100,6 +104,11 @@ Route::post('/absensi', [AbsensiController::class, 'store'])->name('absensi.stor
 Route::delete('/absensi/{id}', [AbsensiController::class, 'destroy'])->name('absensi.destroy');
 Route::get('/absensi/scan', [AbsensiController::class, 'scan'])->name('absensi.scan');
 Route::post('/absensi/scan', [AbsensiController::class, 'scanQr'])->name('absensi.scanQr');
+
+Route::any('kirimEmail', KirimEmailController::class)->name('kirimemail');
+
+Route::get('/generate-pdf', [PdfController::class, 'generatePdf']);
+
 });
 
 require __DIR__.'/auth.php';

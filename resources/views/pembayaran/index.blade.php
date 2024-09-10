@@ -17,6 +17,11 @@
             <a href="{{ route('pembayaran.create') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow">Buat Pembayaran Baru</a>
         </div>
 
+        {{-- Tombol untuk kirim notifikasi --}}
+        <div class="flex justify-end mb-4">
+            <a href="{{ route('kirimEmail') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow">Kirim Notifikasi</a>
+        </div>
+
         {{-- Ringkasan Keuangan --}}
         <div class="bg-white shadow-md rounded-lg p-6 mb-6">
             <h4 class="text-xl font-semibold mb-4">Ringkasan Keuangan</h4>
@@ -62,8 +67,8 @@
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $key + 1 }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <img 
-                                src="{{ asset('storage/fotos/' . $item->siswa->foto) ?? 'https://via.placeholder.com/100' }}" 
+                                <img
+                                src="{{ asset('storage/fotos/' . $item->siswa->foto) ?? 'https://via.placeholder.com/100' }}"
                                 alt="Foto Siswa" class="w-10 h-10 rounded-full object-cover">
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $item->siswa->nama }}</td>

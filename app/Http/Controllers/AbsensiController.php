@@ -93,7 +93,7 @@ class AbsensiController extends Controller
     public function scanQr(Request $request)
     {
         $siswa = Siswa::find($request->id);
-        
+
         Absensi::updateOrCreate(
             [
                 'siswa_id' => $siswa->id,
