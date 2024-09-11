@@ -63,7 +63,7 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($absensis as $absensi)
                             <tr>
-                                <td class="border px-4 py-2 cursor-pointer text-purple-600 hover:text-purple-900" onclick="viewStudentAbsences({{ $absensi->siswa_id }})">
+                                <td class="border px-4 py-2 cursor-pointer text-purple-600 hover:text-purple-900" onclick="showStudentAbsences({{ $absensi->siswa_id }})">
                                     {{ $absensi->siswa->nama }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $absensi->siswa->kelas }}</td>
@@ -122,70 +122,46 @@
     }
 
     function deleteAbsensi() {
-    if (deletingId) {
-        // Send DELETE request to server
-        fetch(`/absensi/${deletingId}`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json',
-            },
-        })
-        .then(response => {
-            if (response.ok) {
-                location.reload(); // Reload to update the list
-            } else {
-                alert('Gagal menghapus absensi.');
-                console.error('Delete failed:', response.statusText); // Debugging
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error); // Log any errors
-            alert('Gagal menghapus absensi.'); // Show an error message
-        });
+        if (deletingId) {
+            // Send DELETE request to server
+            fetch(`/absensi/${deletingId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    location.reload(); // Reload to update the list
+                } else {
+                    alert('Gagal menghapus absensi.');
+                    console.error('Delete failed:', response.statusText); // Debugging
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error); // Log any errors
+                alert('Gagal menghapus absensi.'); // Show an error message
+            });
+        }
+        closeModal('deleteModal');
     }
-    closeModal('deleteModal');
-}
 
     function closeModal(modalId) {
         document.getElementById(modalId).classList.add('hidden');
     }
 
-    function viewStudentAbsences(studentId) {
-        fetch(`/api/student-absences/${studentId}`)
-            .then(response => response.json())
-            .then(data => {
-                const content = `
-                    <table class="min-w-full divide-y divide-gray-200 bg-white border border-gray-300 rounded-lg shadow-md">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            ${data.map(absence => `
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${absence.tanggal}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${absence.status}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${absence.keterangan}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                `;
-                document.getElementById('studentAbsencesContent').innerHTML = content;
-                document.getElementById('studentAbsencesModal').classList.remove('hidden');
-            });
-    }
+    function showStudentAbsences(studentId) {
+        // Get the absensi data for the student from a variable passed to the view
+        const absensiData = @json($absensiData); // Pastikan ini berisi data absensi siswa
+        const studentAbsences = absensiData.filter(absensi => absensi.siswa_id === studentId);
+        
+        const content = studentAbsences.map(absensi => `
+            <p>${absensi.tanggal}: ${absensi.status} - ${absensi.keterangan}</p>
+        `).join('');
 
-    function exportToExcel() {
-        window.location.href = '{{ route("absensi.export.excel") }}' + window.location.search;
-    }
-
-    function exportToPDF() {
-        window.location.href = '{{ route("absensi.export.pdf") }}' + window.location.search;
+        document.getElementById('studentAbsencesContent').innerHTML = content;
+        document.getElementById('studentAbsencesModal').classList.remove('hidden');
     }
 </script>
 @endpush

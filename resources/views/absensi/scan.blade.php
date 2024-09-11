@@ -6,7 +6,7 @@
 
     <!-- Display Success Message -->
     @if(session('success'))
-        <div class="bg-green-500 text-white p-4 rounded mb-4">
+        <div id="success-message" class="bg-green-500 text-white p-4 rounded mb-4 transition-opacity duration-1000 ease-in-out">
             {{ session('success') }}
         </div>
     @endif
@@ -36,6 +36,15 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // Automatically hide success message after 5 seconds with countdown
+        const successMessage = document.getElementById('success-message');
+        if (successMessage) {
+            setTimeout(() => {
+                successMessage.classList.add('opacity-0');
+                setTimeout(() => successMessage.remove(), 1000); // Wait for animation to complete before removing
+            }, 5000); // 5-second delay before starting the fade-out
+        }
+
         const readerElement = document.getElementById("reader");
         const scanMessageElement = document.getElementById("scan-message");
         const scanSound = document.getElementById("scan-sound");

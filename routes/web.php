@@ -14,6 +14,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\SiswaDashboardController;
 
 Route::get('/', function () {
     return redirect('/home'); 
@@ -110,4 +111,10 @@ Route::get('absensi/export/excel', [AbsensiController::class, 'exportExcel'])->n
 Route::get('absensi/export/pdf', [AbsensiController::class, 'exportPDF'])->name('absensi.export.pdf');
 });
 
+
+Route::middleware(['auth:siswa'])->group(function () {
+
+    Route::get('/siswa', [SiswaDashboardController::class, 'index'])->name('siswa.dashboard');
+    Route::get('/siswa/attendance',[SiswaDashboardController::class, 'showAttendance'])->name('siswa.attendance');
+});
 require __DIR__.'/auth.php';

@@ -13,6 +13,8 @@ class AbsensiController extends Controller
 {
     public function index(Request $request)
 {
+    $absensiData = Absensi::with('siswa')->get();
+
     $kelas = $request->query('kelas');
     $bulan = $request->query('bulan');
     $tanggal = $request->query('tanggal');
@@ -54,6 +56,8 @@ class AbsensiController extends Controller
     $classes = Siswa::select('kelas')->distinct()->pluck('kelas');
 
     return view('absensi.index', [
+        'absensi' => $absensi,
+        'absensiData' => $absensiData,
         'absensiGroupedByDate' => $absensiGroupedByDate,
         'classes' => $classes,
         'selectedClass' => $kelas,

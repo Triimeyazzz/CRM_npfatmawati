@@ -9,7 +9,7 @@
     <style>
         .digital-clock {
             font-size: 2em;
-            color: #4A5568; /* Customize color */
+            color: #8b16ce; /* Customize color */
             margin-top: 20px;
         }
     </style>
@@ -99,7 +99,7 @@
             
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Calendar</h3>
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Kalender</h3>
                     <div id='calendar'></div>
                 </div>
             </div>

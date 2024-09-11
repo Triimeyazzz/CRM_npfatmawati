@@ -20,8 +20,10 @@ class Ulasan extends Model
         'komentar',
     ];
 
-    public function siswa()
-    {
-        return $this->belongsTo(Siswa::class);
-    }
+// app/Models/Ulasan.php
+public function siswa()
+{
+    return $this->belongsTo(Siswa::class);
+}
+
 }

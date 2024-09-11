@@ -40,9 +40,9 @@ class Siswa extends Model implements Authenticatable
         'email_ibu',
         'foto',
         'user_id',
-        'mulai_bimbingan', // Add this line
-        'jam_bimbingan', // Add this line
-        'hari_bimbingan', // Add this line
+        'mulai_bimbingan', 
+        'jam_bimbingan', 
+        'hari_bimbingan', 
     ];
 
     protected $hidden = [

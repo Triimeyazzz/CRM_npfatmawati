@@ -8,10 +8,11 @@
     <title>@yield('title', 'Home')</title>
     <link rel="stylesheet" href="{{ asset('slick/slick.css') }}" />
     <link rel="stylesheet" href="{{ asset('slick/slick-theme.css') }}" />
+    <link rel="shortcut icon" href="{{ asset('images/reverse.png') }}" type="image/x-icon">
 </head>
 <body>
-    @include('components.navbar') <!-- Include the Navbar -->
-
+    @include('components.navbar') 
+    
     <div class="container mx-auto">
         @yield('content')
     </div> 

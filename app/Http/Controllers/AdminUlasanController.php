@@ -7,10 +7,11 @@ use Illuminate\Http\Request;
 class AdminUlasanController extends Controller
 {
     public function index()
-    {
-        $ulasan = Ulasan::with('siswa')->latest()->get();
-        return view('ulasan.index', ['ulasan' => $ulasan]);
-    }
+{
+    $ulasan = Ulasan::with('siswa')->latest()->get();
+    return view('ulasan.index', ['ulasan' => $ulasan]);
+}
+
 
     public function create()
     {
