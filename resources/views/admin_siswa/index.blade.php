@@ -11,16 +11,16 @@
                 Tambah Siswa
             </a>
         </div>
-        
+
         <!-- Form Filter -->
         <form action="{{ route('adminsiswa.index') }}" method="GET" class="mb-4 flex gap-2">
             <div class="mb-4 flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
                 <div class="relative w-full sm:w-auto">
-                    <input type="text" name="search"             
+                    <input type="text" name="search"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-3 pl-10 transition duration-300 ease-in-out transform hover:scale-105"
                         placeholder="Cari nama siswa..." value="{{ request('search') }}">
                 </div>
-                
+
                 <!-- Filter Kelas -->
                 <select name="kelas" class="form-select bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2">
                     <option value="">Pilih Kelas</option>
@@ -39,7 +39,7 @@
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Cari</button>
             </div>
         </form>
-        
+
         <!-- Tabel Daftar Siswa -->
         <div class="overflow-x-auto">
             @if($siswa->isEmpty())
@@ -67,7 +67,7 @@
                                     alt="{{ $item->nama }}"
                                     class="w-16 h-16 object-cover rounded-full border-2 border-gray-200"
                                 />
-                            </td>                        
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $item->nama }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                 <img src="{{ route('adminsiswa.qrcode', $item->id) }}" alt="QR Code" style="width: 100px; height: 100px;">

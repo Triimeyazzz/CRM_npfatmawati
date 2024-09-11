@@ -12,23 +12,32 @@ use App\Http\Controllers\CicilanController;
 use App\Http\Controllers\AdminUlasanController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\AbsensiController;
+
 use App\Http\Controllers\KirimEmailController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController as AuthAuthenticatedSessionController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HomeController;
 
+
+Route::get('/', function () {
+    return redirect('/home');
+});
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/home/about', [HomeController::class, 'about'])->name('home.about');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('login', [AuthAuthenticatedSessionController::class, 'showLoginForm'])->name('login');
-Route::post('login', [AuthAuthenticatedSessionController::class, 'login']);
-Route::post('logout', [AuthAuthenticatedSessionController::class, 'logout'])->name('logout');
 
-Route::get('register', [AuthAuthenticatedSessionController::class, 'showRegistrationForm'])->name('register');
-Route::post('register', [AuthAuthenticatedSessionController::class, 'register']);
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+Route::get('login', [AuthenticatedSessionController::class, 'showLoginForm'])->name('login');
+Route::post('login', [AuthenticatedSessionController::class, 'login']);
+Route::post('logout', [AuthenticatedSessionController::class, 'logout'])->name('logout');
+
+Route::get('register', [AuthenticatedSessionController::class, 'showRegistrationForm'])->name('register');
+Route::post('register', [AuthenticatedSessionController::class, 'register']);
 
 Route::middleware('auth')->group(function () {
     Route::post('/events', [EventController::class, 'store']);
@@ -105,9 +114,14 @@ Route::delete('/absensi/{id}', [AbsensiController::class, 'destroy'])->name('abs
 Route::get('/absensi/scan', [AbsensiController::class, 'scan'])->name('absensi.scan');
 Route::post('/absensi/scan', [AbsensiController::class, 'scanQr'])->name('absensi.scanQr');
 
+
 Route::any('kirimEmail', KirimEmailController::class)->name('kirimemail');
 
-Route::get('/generate-pdf', [PdfController::class, 'generatePdf']);
+Route::get('/generate-pdf', [PdfController::class, 'generatePdf'])->name('exportPdf');
+
+
+Route::get('absensi/export/excel', [AbsensiController::class, 'exportExcel'])->name('absensi.export.excel');
+Route::get('absensi/export/pdf', [AbsensiController::class, 'exportPDF'])->name('absensi.export.pdf');
 
 });
 

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AbsensiExport;
 use App\Models\Absensi;
 use App\Models\Siswa;
+use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AbsensiController extends Controller
 {
@@ -106,5 +109,23 @@ class AbsensiController extends Controller
         );
 
         return back()->with('success', 'Absensi berhasil dicatat.');
+    }
+
+    public function exportPdf() {
+        $absensis = Absensi::all();
+        $data = [
+
+            'absensis' => $absensis
+        ];
+
+        // Menghasilkan file PDF dari view 'pdf_template'
+        $pdf = PDF::loadView('pdf_template', $data);
+
+        // Mengembalikan download file PDF
+        return $pdf->download('apa-ini.pdf');
+    }
+
+    public function exportExcel() {
+        return Excel::download(new AbsensiExport(Absensi::all()), 'absensi.xlsx');
     }
 }
