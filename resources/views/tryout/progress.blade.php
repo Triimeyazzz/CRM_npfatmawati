@@ -1,131 +1,112 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto">
-    <h1 class="text-2xl font-bold mb-4">{{ $siswa->nama }}'s Progress</h1>
+<div class="bg-white rounded-lg shadow-lg p-6 transition-transform transform ">
+    <h2 class="text-2xl font-semibold mb-4 text-purple-600">Statistik Tryout {{ $siswa->nama }}</h2>
+    <div id="progressChart" class="mb-6" style="height: 500px;"></div>
+    <div class="space-y-4">
+        @foreach ($datasets as $progress)
+            <div class="border-t pt-4">
+                <h3 class="font-semibold text-lg mb-2 text-gray-800">{{ $progress['label'] }} - {{ $labels[$loop->index] }}</h3>
+                <p class="mb-2">Average Score: <span class="font-medium text-purple-600">{{ number_format($progress['data'][0]['y'], 2) }}</span></p>
+                <h4 class="font-medium text-sm mb-1">Subtopics:</h4>
+                <ul class="list-disc list-inside pl-4 space-y-1">
+                    @foreach ($progress['data'][0]['subtopics'] as $index => $subtopic)
+                        @if ($index < 3)
+                            <li class="text-sm text-gray-700">
+                                {{ $subtopic['sub_mata_pelajaran'] }}: <span class="font-medium">{{ $subtopic['skor'] }}</span>
+                            </li>
+                        @endif
+                    @endforeach
+                </ul>
+                @if (count($progress['data'][0]['subtopics']) > 3)
+                    <a href="javascript:void(0);" class="text-purple-600 hover:underline" onclick="openSubtopicsModal('{{ json_encode($progress['data'][0]['subtopics']) }}')">View More</a>
+                @endif
+            </div>
+        @endforeach
 
-    <!-- Button to toggle chart type -->
-    <div class="mb-4">
-        <button id="toggleChart" class="bg-blue-500 text-white px-4 py-2 rounded">Switch to Line Chart</button>
-    </div>
-
-    <div>
-        <canvas id="progressChart"></canvas>
-    </div>
-
-    <!-- Modal for displaying subtopics -->
-    <div id="subtopicModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-        <div class="bg-white p-4 rounded">
-            <h2 class="text-lg font-bold">Subtopics</h2>
-            <ul id="subtopicList"></ul>
-            <button id="closeModal" class="mt-4 bg-red-500 text-white px-4 py-2 rounded">Close</button>
+        <!-- Subtopics Modal -->
+        <div id="subtopics-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden" onclick="closeSubtopicsModal()">
+            <div class="bg-white p-4 rounded shadow-lg" onclick="event.stopPropagation();">
+                <h3 class="font-semibold text-lg mb-2 text-gray-800">Subtopics</h3>
+                <ul id="subtopics-list" class="list-disc list-inside pl-4 space-y-1"></ul>
+                <button onclick="closeSubtopicsModal()" class="mt-4 px-4 py-2 bg-gray-300 rounded">Close</button>
+            </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const labels = @json($labels);
-            const datasets = @json($datasets);
-
-            // Check the data received
-            console.log('Labels:', labels);
-            console.log('Datasets:', datasets);
-
-            let chartType = 'bar'; // Default to bar chart
-
-            const createChart = () => {
-                const data = {
-                    labels: labels,
-                    datasets: datasets.map(dataset => ({
-                        label: dataset.label,
-                        data: dataset.data.map(point => ({
-                            y: point.y,
-                            subtopics: point.subtopics || [] // Ensure subtopics are included
-                        })),
-                        borderColor: dataset.borderColor,
-                        backgroundColor: chartType === 'bar' ? dataset.backgroundColor : 'transparent', // Use transparent for line chart
-                        borderWidth: chartType === 'line' ? 2 : 0, // Set border width for line chart
-                        barThickness: chartType === 'bar' ? 20 : undefined, // Set bar thickness for bar chart
-                    })),
-                };
-
-                // Check the data being used for the chart
-                console.log('Chart Data:', data);
-
-                const config = {
-                    type: chartType,
-                    data: data,
-                    options: {
-                        scales: {
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Tanggal Pelaksanaan',
-                                }
-                            },
-                            y: {
-                                title: {
-                                    display: true,
-                                    text: 'Average Score',
-                                }
-                            }
-                        },
-                        plugins: {
-                            tooltip: {
-                                callbacks: {
-                                    label: function(tooltipItem) {
-                                        const score = tooltipItem.raw.y; // Access the y value
-                                        const subtopics = datasets[tooltipItem.datasetIndex].data[tooltipItem.dataIndex].subtopics || [];
-                                        return ['Score: ' + score, ...subtopics.map(sub => 'Subtopic: ' + sub)];
-                                    }
-                                }
-                            }
-                        },
-                        onClick: (event) => {
-                            const activePoints = progressChart.getElementsAtEventForMode(event, 'nearest', { intersect: true }, false);
-                            if (activePoints.length) {
-                                const datasetIndex = activePoints[0].datasetIndex;
-                                const dataIndex = activePoints[0].index;
-                                const subtopics = datasets[datasetIndex].data[dataIndex].subtopics; // Access subtopics
-                                showSubtopics(subtopics);
-                            }
-                        }
-                    },
-                };
-
-                return new Chart(document.getElementById('progressChart'), config);
-            };
-
-            let progressChart = createChart(); // Create the initial chart
-
-            // Function to show subtopics
-            function showSubtopics(subtopics) {
-                const subtopicList = document.getElementById('subtopicList');
-                subtopicList.innerHTML = ''; // Clear existing subtopics
-                subtopics.forEach(subtopic => {
-                    const li = document.createElement('li');
-                    li.textContent = subtopic; // Assuming subtopic is a string
-                    subtopicList.appendChild(li);
-                });
-                document.getElementById('subtopicModal').classList.remove('hidden');
-            }
-
-            // Close modal functionality
-            document.getElementById('closeModal').addEventListener('click', function () {
-                document.getElementById('subtopicModal').classList.add('hidden');
-            });
-
-            // Toggle chart type
-            document.getElementById('toggleChart').addEventListener('click', function () {
-                chartType = chartType === 'bar' ? 'line' : 'bar'; // Toggle between 'bar' and 'line'
-                progressChart.destroy(); // Destroy the current chart instance
-                progressChart = createChart(); // Create a new chart instance
-                this.textContent = chartType === 'bar' ? 'Switch to Line Chart' : 'Switch to Bar Chart'; // Update button text
-            });
-        });
-        console.log('Labels:', @json($labels));
-console.log('Datasets:', @json($datasets));
-    </script>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var chartElement = document.getElementById('progressChart');
+    
+    if (chartElement) {
+        // Create a canvas element inside the div if it's not there
+        var canvas = document.createElement('canvas');
+        chartElement.appendChild(canvas);
+        
+        var ctx = canvas.getContext('2d');
+        
+        var datasets = @json($datasets);
+        var labels = @json($labels);
+
+        var chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels, // Ensure labels are correctly set
+                datasets: datasets.map(dataset => ({
+                    label: dataset.label,
+                    data: dataset.data.map(item => ({
+                        x: item.x, // Ensure x value is correctly set
+                        y: item.y
+                    })),
+                    borderColor: dataset.borderColor,
+                    backgroundColor: dataset.backgroundColor,
+                    fill: false
+                }))
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        type: 'category',
+                        labels: labels
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Average Score'
+                        }
+                    }
+                }
+            }
+        });
+    } else {
+        console.error('Chart element not found');
+    }
+});
+
+function openSubtopicsModal(subtopics) {
+    const subtopicsData = JSON.parse(subtopics);
+    const subtopicsList = document.getElementById('subtopics-list');
+    subtopicsList.innerHTML = '';
+
+    subtopicsData.forEach(function(subtopic) {
+        const li = document.createElement('li');
+        li.classList.add('text-sm', 'text-gray-700');
+        li.textContent = `${subtopic.sub_mata_pelajaran}: ${subtopic.skor}`;
+        subtopicsList.appendChild(li);
+    });
+
+    document.getElementById('subtopics-modal').classList.remove('hidden');
+}
+
+function closeSubtopicsModal() {
+    document.getElementById('subtopics-modal').classList.add('hidden');
+}
+
+</script>
 @endsection

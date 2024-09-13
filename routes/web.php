@@ -7,23 +7,30 @@ use App\Http\Controllers\AuthenticatedSessionController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\TryOutController;
-use App\Http\Controllers\PembayaranController; 
-use App\Http\Controllers\CicilanController; 
+use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\CicilanController;
 use App\Http\Controllers\AdminUlasanController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\AbsensiController;
+
+use App\Http\Controllers\KirimEmailController;
+use App\Http\Controllers\PdfController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController as AuthAuthenticatedSessionController;
+
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SiswaDashboardController;
 
+
 Route::get('/', function () {
-    return redirect('/home'); 
+    return redirect('/home');
 });
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/home/about', [HomeController::class, 'about'])->name('home.about');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+Route::post('/home/send-message', [HomeController::class, 'sendMessage'])->name('send.message');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -63,7 +70,7 @@ Route::middleware('auth')->group(function () {
     });
     Route::get('adminsiswa/qrcode/{id}', [SiswaController::class, 'cetakqr'])->name('adminsiswa.qrcode');
     Route::get('adminsiswa/qrcode/download/{id}', [SiswaController::class, 'downloadQrCode'])->name('adminsiswa.qrcode.download');
-    
+
     Route::get('tryout', [TryOutController::class, 'index'])->name('tryout.index');
     Route::get('tryout/{siswa}/progress', [TryOutController::class, 'progress'])->name('tryout.progress');
 
@@ -82,6 +89,8 @@ Route::get('/pembayaran/financial-summary', [PembayaranController::class, 'finan
 Route::delete('/pembayaran/cicilan/{id}', [PembayaranController::class, 'destroyCicilan'])->name('pembayaran.cicilan.destroy');
 Route::post('/pembayaran/{id}/cancel', [PembayaranController::class, 'cancel'])->name('pembayaran.cancel');
 Route::post('/pembayaran/{id}/cancel-new', [PembayaranController::class, 'cancelNew'])->name('pembayaran.cancelNew');
+
+Route::get('kirim-email', KirimEmailController::class)->name('kirimEmail');
 
 
 Route::get('/cicilan', [CicilanController::class, 'index'])->name('cicilan.index');
@@ -107,8 +116,15 @@ Route::delete('/absensi/{id}', [AbsensiController::class, 'destroy'])->name('abs
 Route::get('/absensi/scan', [AbsensiController::class, 'scan'])->name('absensi.scan');
 Route::post('/absensi/scan', [AbsensiController::class, 'scanQr'])->name('absensi.scanQr');
 
+
+Route::any('kirimEmail', KirimEmailController::class)->name('kirimemail');
+
+Route::get('/generate-pdf', [PdfController::class, 'generatePdf'])->name('exportPdf');
+
+
 Route::get('absensi/export/excel', [AbsensiController::class, 'exportExcel'])->name('absensi.export.excel');
 Route::get('absensi/export/pdf', [AbsensiController::class, 'exportPDF'])->name('absensi.export.pdf');
+
 });
 
 

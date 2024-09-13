@@ -21,17 +21,18 @@ class TryOutController extends Controller
 
     public function progress(Siswa $siswa)
     {
+        // Get TryOut data for the student
         $tryOuts = $siswa->tryOuts()->with('subtopics')->get();
-
+    
+        // Prepare labels (unique dates)
         $labels = $tryOuts->pluck('tanggal_pelaksanaan')->unique()->map(function ($date) {
             return $date->format('Y-m-d');
         })->values()->toArray();
-
+        
+        // Prepare datasets based on subject
         $datasets = $tryOuts->groupBy('mata_pelajaran')->map(function ($group, $mataPelajaran) use ($labels) {
             $data = [];
-            $totalScore = 0;
-            $count = 0;
-
+    
             foreach ($group as $tryOut) {
                 $index = array_search($tryOut->tanggal_pelaksanaan->format('Y-m-d'), $labels);
                 if ($index !== false) {
@@ -39,35 +40,28 @@ class TryOutController extends Controller
                     $data[$index] = [
                         'x' => $tryOut->tanggal_pelaksanaan->format('Y-m-d'),
                         'y' => round($tryOutAverageScore, 2),
-                        'subtopics' => $tryOut->subtopics->map(function($subtopic) {
+                        'subtopics' => $tryOut->subtopics->map(function ($subtopic) {
                             return [
                                 'sub_mata_pelajaran' => $subtopic->sub_mata_pelajaran,
                                 'skor' => $subtopic->skor,
                             ];
                         })->toArray(),
                     ];
-                    $totalScore += $tryOutAverageScore;
-                    $count++;
                 }
             }
-
-            $averageScore = $count > 0 ? round($totalScore / $count, 2) : 0;
-
+    
             return [
                 'label' => $mataPelajaran,
-                'data' => array_values($data), // Use array_values to reindex the array
-                'averageScore' => $averageScore,
+                'data' => array_values($data),
                 'borderColor' => '#' . substr(md5($mataPelajaran), 0, 6),
                 'backgroundColor' => 'rgba(' . implode(',', sscanf(substr(md5($mataPelajaran), 0, 6), "%02x%02x%02x")) . ',0.2)',
             ];
         })->values()->toArray();
-
-        \Log::debug('Labels:', $labels);
-        \Log::debug('Datasets:', $datasets);
     
+        // Pass labels and datasets to the view
         return view('tryout.progress', compact('siswa', 'labels', 'datasets'));
-        }
-
+    }
+    
     public function create($siswaId)
 {
     // Assuming you have a model to get the students

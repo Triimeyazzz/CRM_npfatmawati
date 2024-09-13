@@ -44,6 +44,9 @@ class AuthenticatedSessionController extends Controller
                 case 'petugas':
                     $redirectUrl = route('dashboard');
                     break;
+                case 'siswa':
+                    $redirectUrl = route('siswa.dashboard');
+                    break;
                 default:
                     $redirectUrl = route('home'); // Fallback route
                     break;

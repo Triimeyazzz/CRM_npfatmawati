@@ -13,7 +13,7 @@ class PembayaranController extends Controller
     {
         // Menangani pencarian
         $search = $request->input('search');
-    
+
         // Ambil pembayaran dengan pencarian jika ada
         $pembayaran = Pembayaran::with('siswa')
             ->when($search, function ($query) use ($search) {
@@ -22,22 +22,37 @@ class PembayaranController extends Controller
                 });
             })
             ->get();
-    
-        // Hitung total pemasukan per bulan
-        $pemasukanPerBulan = DB::table('pembayaran')
-            ->select(DB::raw('DATE_FORMAT(created_at, "%Y-%m") as bulan'), DB::raw('SUM(jumlah) as total'))
-            ->groupBy('bulan')
-            ->get();
-    
+
+        // Hitung total cicilan
+        $totalCicilan = Cicilan::sum('jumlah');
+
+        // Total tagihan
+        $totalTagihan = Pembayaran::sum('jumlah') ?: 0; // Default to 0 if no payments
+
+        // Total sisa cicilan
+        $sisaCicilan = $totalTagihan - $totalCicilan;
+
+        // Hitung pemasukan per bulan dari cicilan
+        $pemasukanPerBulan = Cicilan::select(
+            DB::raw('DATE_FORMAT(dibayar_pada, "%Y-%m") as bulan'),
+            DB::raw('SUM(jumlah) as total')
+        )
+        ->groupBy('bulan')
+        ->get();
+
+ // Format data for Chart.js
+ $labels = $pemasukanPerBulan->pluck('bulan')->toArray();
+ $data = $pemasukanPerBulan->pluck('total')->toArray();
+
         // Total pemasukan
         $totalPemasukan = $pemasukanPerBulan->sum('total');
-    
-        // Total tagihan dan sisa tagihan
-        $totalTagihan = Pembayaran::sum('jumlah');
+
+        // Sisa tagihan
         $sisaTagihan = $totalTagihan - $totalPemasukan;
-    
-        return view('pembayaran.index', compact('pembayaran', 'pemasukanPerBulan', 'totalPemasukan', 'totalTagihan', 'sisaTagihan', 'search'));
+
+        return view('pembayaran.index', compact('pembayaran', 'labels', 'data', 'totalPemasukan', 'totalTagihan', 'sisaTagihan', 'search'));
     }
+
     public function create()
     {
         $siswa = Siswa::all();
@@ -79,24 +94,25 @@ class PembayaranController extends Controller
         return redirect()->route('pembayaran.index');
     }
 
-    // PembayaranController.php
+    public function show($id)
+    {
+        $pembayaran = Pembayaran::with('siswa', 'cicilan')->findOrFail($id);
+        
+        // Calculate total cicilan
+        $totalCicilan = $pembayaran->cicilan->sum('jumlah');
+        
+        // Calculate remaining balance
+        $sisaCicilan = $pembayaran->jumlah - $totalCicilan;
 
-public function show($id)
-{
-    $pembayaran = Pembayaran::with('siswa', 'cicilan')->findOrFail($id);
-    
-    // Calculate total cicilan
-    $totalCicilan = $pembayaran->cicilan->sum('jumlah');
-    
-    // Calculate remaining balance
-    $sisaCicilan = $pembayaran->jumlah - $totalCicilan;
-
-    return view('pembayaran.show', compact('pembayaran', 'totalCicilan', 'sisaCicilan'));
-}
+        return view('pembayaran.show', compact('pembayaran', 'totalCicilan', 'sisaCicilan'));
+    }
 
     public function financialSummary()
     {
+        // Total pemasukan dari cicilan
         $totalPemasukan = Cicilan::sum('jumlah');
+
+        // Pemasukan per bulan dari cicilan
         $pemasukanPerBulan = Cicilan::select(
             DB::raw('YEAR(dibayar_pada) as year'),
             DB::raw('MONTH(dibayar_pada) as month'),
@@ -107,7 +123,10 @@ public function show($id)
             ->orderBy('month', 'desc')
             ->get();
 
+        // Total tagihan
         $totalTagihan = Pembayaran::sum('jumlah');
+        
+        // Sisa tagihan
         $sisaTagihan = $totalTagihan - $totalPemasukan;
 
         return view('pembayaran.financialSummary', compact('totalPemasukan', 'pemasukanPerBulan', 'totalTagihan', 'sisaTagihan'));
@@ -122,14 +141,13 @@ public function show($id)
     }
 
     public function cancel($id)
-{
-    $pembayaran = Pembayaran::findOrFail($id);
-    $pembayaran->status = 'dibatalkan'; // Use quotes if assigning directly
-    $pembayaran->save();
+    {
+        $pembayaran = Pembayaran::findOrFail($id);
+        $pembayaran->status = 'dibatalkan'; // Use quotes if assigning directly
+        $pembayaran->save();
 
-    return redirect()->route('pembayaran.index')->with('success', 'Pembayaran dibatalkan.');
-}
-
+        return redirect()->route('pembayaran.index')->with('success', 'Pembayaran dibatalkan.');
+    }
 
     public function cancelNew($id)
     {

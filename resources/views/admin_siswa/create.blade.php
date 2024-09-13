@@ -177,8 +177,11 @@
 
         <div>
             <label for="jam_bimbingan" class="block text-sm font-medium text-gray-700 mb-1">Jam Bimbingan</label>
-            <input type="time" name="jam_bimbingan" id="jam_bimbingan" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
-        </div>
+            <input type="time" name="jam_bimbingan" id="jam_bimbingan" 
+                   class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                   required>
+            <span class="text-red-500 text-sm mt-1 hidden" id="error-message">Format harus H:i (contoh: 14:30)</span>
+        </div>        
     </div>
 </div>
 {{-- Upload Photo with Preview --}}
@@ -219,7 +222,6 @@
                             <input type="checkbox" name="hari_bimbingan[]" value="Sabtu">
                             <span class="ml-2">Sabtu</span>
                         </label>
-                                {{-- Add checkboxes for other days --}}
                     </div>
                 </div>
 
@@ -241,5 +243,20 @@
             };
             reader.readAsDataURL(event.target.files[0]);
         }
+
+        const jamBimbinganInput = document.getElementById('jam_bimbingan');
+    const errorMessage = document.getElementById('error-message');
+
+    jamBimbinganInput.addEventListener('input', function() {
+        const value = jamBimbinganInput.value;
+        // Regular expression to match the H:i format (24-hour)
+        const timePattern = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+
+        if (!timePattern.test(value)) {
+            errorMessage.classList.remove('hidden');
+        } else {
+            errorMessage.classList.add('hidden');
+        }
+    });
     </script>
 @endsection

@@ -19,13 +19,38 @@
 
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.rawgit.com/michalsnik/aos/2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.rawgit.com/michalsnik/aos/2.3.1/dist/aos.js"></script>
+    
+    <style>
+        .sidebar {
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
 
+        .sidebar-collapsed {
+            transform: translateX(-100%);
+            opacity: 0;
+            pointer-events: none; /* Prevent mouse events */
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                z-index: 40;
+            }
+        }
+    </style>
 </head>
 
 <body class="font-sans antialiased">
-    <div class="flex min-h-screen bg-gray-100">
+    <div class="flex min-h-screen bg-gray-100 ">
+        <!-- Sidebar Toggle Button -->
+        <button id="sidebarToggle" class="draggable fixed top-4  z-50 bg-white p-2 rounded-md shadow-md">
+            <i class="fas fa-bars"></i>
+        </button>
+
         <!-- Sidebar -->
-        <nav class="bg-white w-64 min-h-screen flex flex-col fixed">
+        <nav id="sidebar" class="sidebar bg-white w-64 min-h-screen flex flex-col fixed left-0 top-0 bottom-0 transition-transform duration-300 ease-in-out transform z-10">
             <div class="flex items-center justify-between h-16 border-b border-gray-200 px-4">
                 <img src="{{ asset('images/logo color.png') }}" alt="Primagama Logo" class="h-10">
             </div>
@@ -44,12 +69,12 @@
             <ul class="space-y-2 flex-1 overflow-y-auto p-3">
                 <li>
                     <a href="{{ route('dashboard') }}"
-                        class="block px-6 py-3 rounded-lg text-gray-700 bg-gradient-to-r from-white to-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 ease-in-out active:bg-gray-200 
+                        class="block px-6 py-3 rounded-lg text-gray-700 bg-gradient-to-r from-white to-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 ease-in-out active:bg-gray-200
                         {{ request()->routeIs('dashboard') ? 'border-b-2 border-purple-500' : '' }}">
                         <i class="fas fa-tachometer-alt inline-block"></i>
                         <span class="ml-3">Dashboard</span>
                     </a>
-                </li>                
+                </li>
                 <li>
                     <a href="{{ route('profile.edit') }}"
                         class="block px-6 py-3 rounded-lg text-gray-700 bg-gradient-to-r from-white to-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 ease-in-out active:bg-gray-200
@@ -110,13 +135,54 @@
         </nav>
 
         <!-- Main Content -->
-        <main class="flex-1 p-8 ml-64"> <!-- Add margin-left to account for the sidebar -->
+        <main id="mainContent" class="flex-1 p-8 transition-all duration-300 ease-in-out"> <!-- Add transition for smooth movement -->
             @yield('content')
         </main>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    @stack('scripts')
+    
+    <script>
+        // Toggle sidebar
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const mainContent = document.getElementById('mainContent');
+
+        // Start with sidebar open
+        sidebar.classList.remove('sidebar-collapsed');
+        mainContent.classList.add('ml-64');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('sidebar-collapsed');
+            mainContent.classList.toggle('ml-64'); // Adjust for main content when sidebar is open
+            mainContent.classList.toggle('ml-0');   // Adjust for main content when sidebar is closed
+        });
+
+        // Make the toggle button draggable
+        interact('.draggable')
+            .draggable({
+                listeners: {
+                    move(event) {
+                        const target = event.target;
+                        const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+                        target.style.transform = `translate(${x}px, 0)`;
+                        target.setAttribute('data-x', x);
+                        
+                        // Adjust sidebar position based on drag distance
+                        if (x > 100) {
+                            sidebar.classList.remove('sidebar-collapsed');
+                            mainContent.classList.remove('ml-0');
+                            mainContent.classList.add('ml-64');
+                        } else if (x < -100) {
+                            sidebar.classList.add('sidebar-collapsed');
+                            mainContent.classList.remove('ml-64');
+                            mainContent.classList.add('ml-0');
+                        }
+                    },
+                },
+            });
+    </script>
 </body>
 
 </html>

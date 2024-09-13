@@ -3,13 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Siswa;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Endroid\QrCode\Color\Color;
 use Endroid\QrCode\Logo\Logo;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
-use Endroid\QrCode\Response\QrCodeResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class SiswaController extends Controller
 {
@@ -53,9 +51,17 @@ class SiswaController extends Controller
             ->setSize(300)
             ->setMargin(10); // Atur margin jika perlu
 
+        $logoPath = public_path('images/reverse.png'); // Ganti dengan path logo Anda
+        if (file_exists($logoPath)) {
+            $logo = Logo::create($logoPath)
+                ->setResizeToWidth(100)
+                ->setPunchoutBackground(false)
+            ;
+        }
+
         // Buat writer dan response
         $writer = new PngWriter();
-        $response = $writer->write($qrCode);
+        $response = $writer->write($qrCode, $logo);
 
         return response($response->getString())
             ->header('Content-Type', 'image/png');
@@ -73,14 +79,15 @@ class SiswaController extends Controller
         // Tambahkan logo
         $logoPath = public_path('images/logo color.png'); // Ganti dengan path logo Anda
         if (file_exists($logoPath)) {
-            $qrCode->setLogo($logoPath); // Pastikan metode ini tersedia di versi yang Anda gunakan
+            $logo = Logo::create($logoPath)
+                ->setResizeToWidth(100)
+                ->setPunchoutBackground(false)
+            ;
         }
 
-        // Buat writer dan respons
         $writer = new PngWriter();
-        $response = $writer->write($qrCode);
+        $response = $writer->write($qrCode, $logo);
 
-        // Atur header untuk download
         return response($response->getString(), 200, [
             'Content-Type' => 'image/png',
             'Content-Disposition' => 'attachment; filename="qrcode-' . $siswa->nama . '.png"',
@@ -189,20 +196,20 @@ class SiswaController extends Controller
             'jam_bimbingan' => 'required|date_format:H:i',
             'hari_bimbingan' => 'required|array'
         ]);
-    
+
         // Handle file upload if applicable
         if ($request->hasFile('foto')) {
             $path = $request->file('foto')->store('photos', 'public');
             $siswa->foto = $path;
         }
-    
+
         // Update the Siswa instance with the validated data
         $validated['hari_bimbingan'] = json_encode($validated['hari_bimbingan']);
         $siswa->update($validated);
-    
+
         return redirect()->route('adminsiswa.index')->with('success', 'Siswa berhasil diperbarui.');
     }
-    
+
     public function show(Siswa $siswa)
     {
         return view('admin_siswa.show', [
@@ -217,5 +224,5 @@ class SiswaController extends Controller
     }
 
 
-    
+
 }

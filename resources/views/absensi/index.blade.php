@@ -103,12 +103,25 @@
 <div id="studentAbsencesModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 hidden">
     <div class="bg-white p-6 rounded-lg shadow-lg max-w-3xl w-full">
         <h3 class="text-lg font-semibold mb-4">Absensi Siswa</h3>
-        <div id="studentAbsencesContent"></div>
+        <table class="min-w-full divide-y divide-gray-200 bg-white border border-gray-300 rounded-lg shadow-md">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Siswa</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
+                </tr>
+            </thead>
+            <tbody id="studentAbsencesContent" class="bg-white divide-y divide-gray-200">
+                <!-- Content will be populated here -->
+            </tbody>
+        </table>
         <button onclick="closeModal('studentAbsencesModal')" class="mt-4 bg-gray-600 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-700 transition">
             Tutup
         </button>
     </div>
 </div>
+
 
 @endsection
 
@@ -152,16 +165,24 @@
     }
 
     function showStudentAbsences(studentId) {
-        // Get the absensi data for the student from a variable passed to the view
-        const absensiData = @json($absensiData); // Pastikan ini berisi data absensi siswa
-        const studentAbsences = absensiData.filter(absensi => absensi.siswa_id === studentId);
-        
-        const content = studentAbsences.map(absensi => `
-            <p>${absensi.tanggal}: ${absensi.status} - ${absensi.keterangan}</p>
-        `).join('');
+    // Get the absensi data for the student from a variable passed to the view
+    const absensiData = @json($absensiData); // Pastikan ini berisi data absensi siswa
+    const studentAbsences = absensiData.filter(absensi => absensi.siswa_id === studentId);
 
-        document.getElementById('studentAbsencesContent').innerHTML = content;
-        document.getElementById('studentAbsencesModal').classList.remove('hidden');
-    }
+    // Generate table rows with conditional styling
+    const content = studentAbsences.map(absensi => `
+        <tr class="${absensi.status === 'Hadir' ? 'bg-green-100' : 'bg-red-100'}">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${absensi.siswa.nama}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${absensi.tanggal}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium ${absensi.status === 'Hadir' ? 'text-green-600' : 'text-red-600'}">${absensi.status}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${absensi.keterangan}</td>
+        </tr>
+    `).join('');
+
+    document.getElementById('studentAbsencesContent').innerHTML = content;
+    document.getElementById('studentAbsencesModal').classList.remove('hidden');
+}
+
+
 </script>
 @endpush

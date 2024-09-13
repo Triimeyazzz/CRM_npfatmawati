@@ -3,8 +3,9 @@ namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
 
-class AbsensiExport implements FromCollection, WithHeadings
+class AbsensiExport implements FromCollection, WithHeadings, WithMapping
 {
     protected $absensi;
 
@@ -26,6 +27,17 @@ class AbsensiExport implements FromCollection, WithHeadings
             'Kelas',
             'Status',
             'Keterangan',
+        ];
+    }
+
+    public function map($absensi): array
+    {
+        return [
+            $absensi->created_at->format('Y-m-d'),
+            $absensi->siswa->nama,
+            $absensi->siswa->kelas,
+            $absensi->status,
+            $absensi->keterangan
         ];
     }
 }

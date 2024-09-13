@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Mail;
+use Exception;
 class HomeController extends Controller
 {
     public function index()
@@ -261,4 +262,35 @@ class HomeController extends Controller
     {
         return view('home.about');
     }
+
+    public function sendMessage(Request $request)
+{
+    // Validasi input form
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'message' => 'required|string|max:5000',
+    ]);
+
+    // Data yang akan dikirim ke email
+    $emailData = [
+        'name' => $request->input('name'),
+        'email' => $request->input('email'),
+        'messageContent' => $request->input('message'),
+    ];
+
+    try {
+        // Mengirim email ke raifanramadhanputra06@gmail.com
+        Mail::send('emails.contact', $emailData, function($message) {
+            $message->to('raifanramadhanputra06@gmail.com')
+                    ->subject('Pesan Baru dari Formulir Kontak');
+        });
+
+        // Redirect dengan pesan sukses jika email terkirim
+        return back()->with('success', 'Pesan berhasil dikirim!');
+    } catch (Exception $e) {
+        // Tangani kesalahan pengiriman email
+        return back()->withErrors(['error' => 'Gagal mengirim pesan, silakan coba lagi.']);
+    }
+}
 }
