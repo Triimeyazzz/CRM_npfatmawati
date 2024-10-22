@@ -1,72 +1,74 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>Admin NP FATMAWATI</title>
-    <link rel="shortcut icon" href="{{ asset('images/reverse.png') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('images/Reverse.png') }}" type="image/x-icon">
+    
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Select2 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.rawgit.com/michalsnik/aos/2.3.1/dist/aos.css" rel="stylesheet">
-    <script src="https://cdn.rawgit.com/michalsnik/aos/2.3.1/dist/aos.js"></script>
+    
+    <!-- AOS Library for animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     
     <style>
-        .sidebar {
-            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        body {
+            font-family: 'Inter', sans-serif;
         }
-
+        .sidebar {
+            transition: all 0.3s ease-in-out;
+        }
         .sidebar-collapsed {
             transform: translateX(-100%);
-            opacity: 0;
-            pointer-events: none; /* Prevent mouse events */
         }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                z-index: 40;
-            }
+        .menu-item {
+            transition: all 0.2s ease-in-out;
+        }
+        .menu-item:hover {
+            background-color: rgba(99, 102, 241, 0.1);
+            color: #4F46E5;
+        }
+        .menu-item.active {
+            background-color: #4F46E5;
+            color: white;
         }
     </style>
 </head>
 
-<body class="font-sans antialiased">
-    <div class="flex min-h-screen bg-gray-100 ">
+<body class="bg-gray-100">
+    <div class="flex min-h-screen">
         <!-- Sidebar Toggle Button -->
-        <button id="sidebarToggle" class="draggable fixed top-4  z-50 bg-white p-2 rounded-md shadow-md">
-            <i class="fas fa-bars"></i>
+        <button id="sidebarToggle" class="fixed top-4 left-4 z-50 bg-white p-2 rounded-full shadow-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <i class="fas fa-bars text-gray-600"></i>
         </button>
 
         <!-- Sidebar -->
-        <nav id="sidebar" class="sidebar bg-white w-64 min-h-screen flex flex-col fixed left-0 top-0 bottom-0 transition-transform duration-300 ease-in-out transform z-10">
-            <div class="flex items-center justify-between h-16 border-b border-gray-200 px-4">
-                <img src="{{ asset('images/logo color.png') }}" alt="Primagama Logo" class="h-10">
+        <nav id="sidebar" class="sidebar bg-white w-64 min-h-screen flex flex-col fixed left-0 top-0 bottom-0 shadow-xl z-40">
+            <div class="flex items-center justify-center h-16 border-b border-gray-200 px-4">
+                <a href="/">
+                    <img src="{{ asset('images/Logo Color.png') }}" alt="Primagama Logo" class="h-10">
+                </a>
             </div>
             <div class="flex items-center space-x-4 px-4 py-6 border-b border-gray-200">
-                <img src="{{ asset('storage/' . Auth::user()->profile_picture) }}" alt="{{ Auth::user()->name }}"
-                    class="w-12 h-12 rounded-full">
+                <img src="{{ asset('storage/profile_picture' . Auth::user()->profile_picture) }}" alt="{{ Auth::user()->name }}"
+                    class="w-12 h-12 rounded-full object-cover border-2 border-indigo-500">
                 <div>
-                    <span class="block font-semibold">{{ Auth::user()->name }}</span>
-                    <span class="text-sm text-gray-500">{{ ucfirst(Auth::user()->role) }}</span>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit">Logout</button>
-                    </form>
+                    <span class="block font-semibold text-gray-800">{{ Auth::user()->name }}</span>
+                    <span class="text-sm text-indigo-600">{{ ucfirst(Auth::user()->role) }}</span>
                 </div>
             </div>
-            <ul class="space-y-2 flex-1 overflow-y-auto p-3">
+            <ul class="space-y-2 flex-1 overflow-y-auto p-4">
+                <!-- Menu items -->
                 <li>
                     <a href="{{ route('dashboard') }}"
                         class="block px-6 py-3 rounded-lg text-gray-700 bg-gradient-to-r from-white to-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 ease-in-out active:bg-gray-200
@@ -131,58 +133,57 @@
                         <span class="ml-3">Absensi </span>
                     </a>
                 </li>
+                <!-- Add other menu items similarly -->
             </ul>
+            <div class="p-4 border-t border-gray-200">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-200">Logout</button>
+                </form>
+            </div>
         </nav>
 
         <!-- Main Content -->
-        <main id="mainContent" class="flex-1 p-8 transition-all duration-300 ease-in-out"> <!-- Add transition for smooth movement -->
-            @yield('content')
+        <main id="mainContent" class="flex-1 p-8 ml-64 transition-all duration-300 ease-in-out">
+            <div class="max-w-7xl mx-auto">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    @yield('content')
+                </div>
+            </div>
         </main>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    
     <script>
-        // Toggle sidebar
+        // Initialize AOS
+        AOS.init();
+
+        // Sidebar toggle functionality
         const sidebar = document.getElementById('sidebar');
         const sidebarToggle = document.getElementById('sidebarToggle');
         const mainContent = document.getElementById('mainContent');
 
-        // Start with sidebar open
-        sidebar.classList.remove('sidebar-collapsed');
-        mainContent.classList.add('ml-64');
-
         sidebarToggle.addEventListener('click', () => {
             sidebar.classList.toggle('sidebar-collapsed');
-            mainContent.classList.toggle('ml-64'); // Adjust for main content when sidebar is open
-            mainContent.classList.toggle('ml-0');   // Adjust for main content when sidebar is closed
+            mainContent.classList.toggle('ml-64');
+            mainContent.classList.toggle('ml-0');
         });
 
-        // Make the toggle button draggable
-        interact('.draggable')
-            .draggable({
-                listeners: {
-                    move(event) {
-                        const target = event.target;
-                        const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-                        target.style.transform = `translate(${x}px, 0)`;
-                        target.setAttribute('data-x', x);
-                        
-                        // Adjust sidebar position based on drag distance
-                        if (x > 100) {
-                            sidebar.classList.remove('sidebar-collapsed');
-                            mainContent.classList.remove('ml-0');
-                            mainContent.classList.add('ml-64');
-                        } else if (x < -100) {
-                            sidebar.classList.add('sidebar-collapsed');
-                            mainContent.classList.remove('ml-64');
-                            mainContent.classList.add('ml-0');
-                        }
-                    },
-                },
-            });
+        // Responsive sidebar behavior
+        function checkWindowSize() {
+            if (window.innerWidth < 768) {
+                sidebar.classList.add('sidebar-collapsed');
+                mainContent.classList.remove('ml-64');
+                mainContent.classList.add('ml-0');
+            } else {
+                sidebar.classList.remove('sidebar-collapsed');
+                mainContent.classList.add('ml-64');
+                mainContent.classList.remove('ml-0');
+            }
+        }
+
+        window.addEventListener('resize', checkWindowSize);
+        checkWindowSize(); // Initial check
     </script>
 </body>
-
 </html>

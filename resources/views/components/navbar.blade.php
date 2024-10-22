@@ -2,8 +2,8 @@
     id="main-nav">
     <div class="container mx-auto flex justify-between items-center">
         <div class="text-white text-lg font-bold pl-4">
-            <a href="{{ route('home') }}" class="flex items-center transition-transform duration-300 hover:scale-105">
-                <img src="{{ asset('images/Logo White.png') }}" class="h-11" alt="Logo" />
+            <a href="{{ route('home') }}" class="flex items-center transition-transform duration-300 hover:scale-105 mx-4">
+                <img src="{{ asset('images/logo_new.png') }}" class="h-11" alt="Logo" />
             </a>
         </div>
         <div class="lg:hidden">
@@ -16,38 +16,45 @@
             </button>
         </div>
         <div id="navbar" class="lg:flex lg:flex-grow items-center hidden">
-            <div class="lg:flex lg:items-center lg:justify-end lg:flex-grow">
+            <div class="lg:flex lg:items-center lg:justify-start lg:flex-grow">
                 <div class="flex flex-col lg:flex-row lg:space-x-8 lg:items-center lg:space-y-0 space-y-4">
                     @php
-                        $navItems = [
-                            ['route' => 'home', 'name' => 'Home'],
-                            ['route' => 'home.about', 'name' => 'About Us'],
-                            ['href' => '#contact', 'name' => 'Contact'],
-                        ];
+                    $navItems = [
+                    ['route' => 'home', 'name' => 'Home'],
+                    ['route' => 'home.about', 'name' => 'About Us'],
+                    ['href' => '#contact', 'name' => 'Contact'],
+                    ];
 
-                        // Check if the user is logged in as a 'siswa'
-                        if (Auth::guard('siswa')->check()) {
-                            $navItems[] = ['route' => 'siswa.dashboard', 'name' => 'Siswa Dashboard'];
-                            $navItems[] = ['route' => 'siswa.attendance', 'name' => 'Absensi'];
-                        }
-                        // Check if the user is logged in as admin
-                        elseif (Auth::check()) {
-                            $navItems[] = ['route' => 'dashboard', 'name' => 'Admin Dashboard'];
-                        }
-                        // If no user is logged in
-                        else {
-                            $navItems[] = ['route' => 'login', 'name' => 'Login'];
-                        }
+                    // Check if the user is logged in as a 'siswa'
+                    if (Auth::guard('siswa')->check()) {
+                    $navItems[] = ['route' => 'siswa.dashboard', 'name' => 'Siswa Dashboard'];
+                    $navItems[] = ['route' => 'siswa.attendance', 'name' => 'Absensi'];
+                    }
+                    // Check if the user is logged in as admin
+                    elseif (Auth::check()) {
+                    $navItems[] = ['route' => 'dashboard', 'name' => 'Admin Dashboard'];
+                    }
+                    // If no user is logged in
+                    else {
+                    $navItems[] = ['route' => 'login', 'name' => 'Login'];
+                    }
                     @endphp
 
                     @foreach ($navItems as $item)
-                        <a href="{{ isset($item['route']) ? route($item['route']) : $item['href'] }}"
-                            class="text-yellow-400 hover:text-yellow-200 transition-all duration-300 ease-in-out transform hover:scale-110 {{ isset($item['route']) && request()->routeIs($item['route']) ? 'border-b-2 border-purple-500' : '' }}">
-                            {{ $item['name'] }}
-                        </a>
+                    <a href="{{ isset($item['route']) ? route($item['route']) : $item['href'] }}"
+                        class="text-yellow-400 hover:text-yellow-200 transition-all duration-300 ease-in-out transform hover:scale-110 {{ isset($item['route']) && request()->routeIs($item['route']) ? 'border-b-2 border-purple-500' : '' }}">
+                        {{ $item['name'] }}
+                    </a>
                     @endforeach
                 </div>
             </div>
+            <!-- <div class="lg:flex lg:items-center lg:justify-end lg:flex-grow">
+                <div class="flex flex-col lg:flex-row lg:space-x-8 lg:items-center lg:space-y-0 space-y-4">
+                <div class="bg-yellow-300 p-2 border-b-4 border-r-4 border-yellow-00">
+                    <a href="text-purple-500">Daftar</a>
+                </div>
+                </div>
+            </div> -->
         </div>
     </div>
 </nav>

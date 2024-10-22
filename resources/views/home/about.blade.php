@@ -43,17 +43,17 @@
 @section('content')
 <div class="bg-gradient-to-r from-purple-100 to-blue-100 min-h-screen p-8">
     <h1 class="text-5xl font-bold text-center mb-12 text-purple-800 opacity-0 transform -translate-y-10" id="main-title">
-        About Primagama Fatmawati
+        Tentang New Primagama Fatmawati
     </h1>
 
     <div class="w-full max-w-4xl mx-auto">
         
         <div id="tabContentExample">
             <div class="tab-content active p-4 rounded-lg bg-white shadow-md mt-6" id="intro" role="tabpanel" aria-labelledby="intro-tab">
-                <h2 class="text-2xl font-semibold mb-4">Welcome to Primagama Fatmawati</h2>
-                <img src="{{ asset('images/primagama-building.jpg') }}" alt="Primagama Fatmawati Building" class="w-full rounded-lg shadow-lg mb-6">
+                <h2 class="text-2xl font-semibold mb-4">Selamat Datang di New Primagama Fatmawati</h2>
+                <img src="{{ asset('images/about.png') }}" alt="Primagama Fatmawati Building" class="w-full rounded-lg shadow-lg mb-6">
                 <p class="text-lg text-gray-700">
-                    Primagama Fatmawati is a leading educational institution committed to nurturing the next generation of leaders and innovators. With our state-of-the-art facilities and dedicated team of educators, we strive to provide an unparalleled learning experience for our students.
+                New Primagama powered by Zenius adalah institusi bimbingan belajar dengan fasilitas menyeluruh yang mengoptimalkan pembelajaran online dan offline. Bersatu dengan Zenius Education sejak tahun 2022, New Primagama semakin kuat dengan tentor-tentor berkualitas tinggi serta pembelajaran fundamental yang membuat anak-anak Indonesia cerdas beneran. Mari bergabung dan menjadi pelajar sukses di New Primagama!
                 </p>
             </div>
             <div class="tab-content p-4 rounded-lg bg-white shadow-md mt-6" id="history" role="tabpanel" aria-labelledby="history-tab">
@@ -87,15 +87,42 @@
             <div class="tab-content p-4 rounded-lg bg-white shadow-md mt-6" id="team" role="tabpanel" aria-labelledby="team-tab">
                 <h2 class="text-2xl font-semibold mb-4">Our Team</h2>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    @foreach(['Raifan' => 'CEO', 'Trimei' => 'CTO', 'Jane Doe' => 'COO', 'John Smith' => 'CMO'] as $name => $role)
-                        <div class="team-member text-center">
-                            <img src="{{ asset('images/placeholder.jpg') }}" alt="{{ $name }}" class="w-32 h-32 rounded-full mx-auto mb-2">
-                            <h3 class="font-semibold">{{ $name }}</h3>
-                            <p class="text-sm text-gray-600">{{ $role }}</p>
-                        </div>
-                    @endforeach
+                @foreach([
+    ['name' => 'Kak Taufik', 'role' => 'BM', 'image' => asset('images/kak taufik.jpeg')],
+    ['name' => 'Kak Khal', 'role' => 'Admin', 'image' => asset('images/kak khal.jpeg')],
+    ['name' => 'Kak Sam', 'role' => 'Office Support', 'image' => asset('images/kak sam.jpeg')],
+    ['name' => 'Kak Ayas', 'role' => 'CMO', 'image' => 'path/to/kak_ayas_image'],
+    ['name' => 'Kak Iis', 'role' => '..', 'image' => 'path/to/kak_iis_image']
+] as $member)
+    <div class="team-member text-center">
+        <img src="{{ $member['image'] }}" alt="{{ $member['name'] }}" class="w-32 h-32 rounded-full mx-auto mb-2">
+        <h3 class="font-semibold">{{ $member['name'] }}</h3>
+        <p class="text-sm text-gray-600">{{ $member['role'] }}</p>
+    </div>
+@endforeach
                 </div>
             </div>
+
+            <div class="tab-content p-4 rounded-lg bg-white shadow-md mt-6" id="team" role="tabpanel" aria-labelledby="team-tab">
+                <h2 class="text-2xl font-semibold mb-4">Our Teacher</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                @foreach([
+    ['name' => 'Kak Rino', 'role' => 'Tentor Penalaran Umum', 'image' => asset('images/kak taufik.jpeg')],
+    ['name' => 'Kak Rakha', 'role' => 'Tentor Matematika', 'image' => asset('images/kak khal.jpeg')],
+    ['name' => 'Kak Najwa', 'role' => 'Tentor Bahasa Indonesia', 'image' => asset('images/kak sam.jpeg')],
+    ['name' => 'Kak Luqman', 'role' => 'Tentor Bahasa Indonesia', 'image' => 'path/to/kak_ayas_image'],
+    ['name' => 'Kak Daulat', 'role' => 'Tentor Matematika', 'image' => 'path/to/kak_iis_image'],
+    ['name' => 'Kak Yuuji', 'role' => 'Tentor Bahasa Inggris', 'image' => 'path/to/kak_iis_image']
+] as $member)
+    <div class="team-member text-center">
+        <img src="{{ $member['image'] }}" alt="{{ $member['name'] }}" class="w-32 h-32 rounded-full mx-auto mb-2">
+        <h3 class="font-semibold">{{ $member['name'] }}</h3>
+        <p class="text-sm text-gray-600">{{ $member['role'] }}</p>
+    </div>
+@endforeach
+                </div>
+            </div>
+
             <div class="tab-content p-4 rounded-lg bg-white shadow-md mt-6" id="values" role="tabpanel" aria-labelledby="values-tab">
                 <h2 class="text-2xl font-semibold mb-4">Our Core Values</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -131,7 +158,7 @@
             </div>
             <div class="aspect-w-16 aspect-h-9">
                 <iframe 
-                    src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                    src="{{ asset('images/video np.mp4') }}"  
                     frameborder="0" 
                     allow="autoplay; encrypted-media" 
                     allowfullscreen

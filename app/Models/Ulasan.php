@@ -20,10 +20,11 @@ class Ulasan extends Model
         'komentar',
     ];
 
-// app/Models/Ulasan.php
+
 public function siswa()
 {
-    return $this->belongsTo(Siswa::class);
+    return $this->belongsTo(Siswa::class, 'siswa_id'); // Adjust 'siswa_id' to the actual foreign key
 }
+
 
 }

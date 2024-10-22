@@ -43,7 +43,7 @@
                 'kota', 'no_wa', 'instagram', 'nama_sekolah', 'alamat_sekolah', 'kurikulum', 
                 'nama_ayah', 'pekerjaan_ayah', 'no_telp_hp_ayah', 'no_wa_id_line_ayah', 
                 'email_ayah', 'nama_ibu', 'pekerjaan_ibu', 'no_telp_hp_ibu', 'no_wa_id_line_ibu', 
-                'kelas', 'email_ibu', 'mulai_bimbingan', 'jam_bimbingan', 'hari_bimbingan'] as $field)
+                'kelas', 'email_ibu', 'mulai_bimbingan', 'jam_bimbingan', 'hari_bimbingan', 'nama_ptn_tujuan', 'jurusan_tujuan'] as $field)
                 <div class="flex justify-between text-sm text-gray-700">
                     <span class="font-medium text-purple-600">{{ ucwords(str_replace('_', ' ', $field)) }}:</span>
                     <span class="text-gray-800">{{ $siswaInfo[$field] }}</span>
@@ -113,30 +113,32 @@
                     </div>
 
                     <!-- Try-Out Results -->
-                    <div class="bg-white rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105 border-b-4 border-r-4 border-purple-500">
-                        <h2 class="text-2xl font-semibold mb-4 text-purple-600">Statistik Try-Out</h2>
-                        <div id="tryOutChart" class="mb-6" style="height: 300px;"></div>
-                        <div class="space-y-4">
-                            @foreach ($tryOutInfo as $tryOut)
-                                <div class="border-t pt-4">
-                                    <h3 class="font-semibold text-lg mb-2 text-gray-800">{{ $tryOut['mata_pelajaran'] }} -
-                                        {{ $tryOut['tanggal_pelaksanaan']->format('d M Y') }}</h3>
-                                    <p class="mb-2">Average Score: <span class="font-medium text-purple-600">{{ number_format($tryOut['average_score'], 2) }}</span></p>
-                                    <h4 class="font-medium text-sm mb-1">Subtopics:</h4>
-                                    <ul class="list-disc list-inside pl-4 space-y-1">
-                                        @foreach ($tryOut['subtopics'] as $index => $subtopic)
-                                            @if ($index < 3) <!-- Show only the first 3 subtopics -->
-                                                <li class="text-sm text-gray-700">
-                                                    {{ $subtopic['sub_mata_pelajaran'] }}: <span class="font-medium">{{ $subtopic['skor'] }}</span>
-                                                </li>
-                                            @endif
-                                        @endforeach
-                                    </ul>
-                                    @if (count($tryOut['subtopics']) > 3) <!-- Check if there are more than 3 subtopics -->
-                                        <a href="javascript:void(0);" class="text-purple-600 hover:underline" onclick="openSubtopicsModal('{{ json_encode($tryOut['subtopics']) }}')">View More</a>
-                                    @endif
-                                </div>
+                    <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6 transition-transform transform hover:scale-105 border-b-4 border-r-4 border-purple-500">
+            <h2 class="text-xl sm:text-2xl font-semibold mb-4 text-purple-600">Statistik Try-Out</h2>
+            <div id="tryOutChart" class="mb-6" style="min-height: 300px;"></div>
+            <div class="space-y-4">
+                @foreach ($tryOutInfo as $tryOut)
+                    <div class="border-t pt-4">
+                        <h3 class="font-semibold text-base sm:text-lg mb-2 text-gray-800">{{ $tryOut['mata_pelajaran'] }} -
+                            {{ $tryOut['tanggal_pelaksanaan']->format('d M Y') }}</h3>
+                        <p class="mb-2 text-sm sm:text-base">Average Score: <span class="font-medium text-purple-600">{{ number_format($tryOut['average_score'], 2) }}</span></p>
+                        <h4 class="font-medium text-xs sm:text-sm mb-1">Subtopics:</h4>
+                        <ul class="list-disc list-inside pl-2 sm:pl-4 space-y-1 text-xs sm:text-sm">
+                            @foreach ($tryOut['subtopics'] as $index => $subtopic)
+                                @if ($index < 3)
+                                    <li class="text-gray-700">
+                                        {{ $subtopic['sub_mata_pelajaran'] }}: <span class="font-medium">{{ $subtopic['skor'] }}</span>
+                                    </li>
+                                @endif
                             @endforeach
+                        </ul>
+                        @if (count($tryOut['subtopics']) > 3)
+                            <a href="javascript:void(0);" class="text-purple-600 hover:underline text-xs sm:text-sm" onclick="openSubtopicsModal('{{ json_encode($tryOut['subtopics']) }}')">View More</a>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        </div>
                             <!-- Subtopics Modal -->
 <div id="subtopics-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden" onclick="closeSubtopicsModal()">
     <div class="bg-white p-4 rounded shadow-lg" onclick="event.stopPropagation();">
@@ -159,61 +161,64 @@
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Try-Out Chart
-            var tryOutData = @json($tryOutInfo);
-            var series = tryOutData.map(function(tryOut) {
-                return {
-                    name: tryOut.mata_pelajaran,
-                    data: [{
-                        x: tryOut.tanggal_pelaksanaan,
-                        y: tryOut.average_score,
-                        subtopics: tryOut.subtopics
-                    }]
-                };
-            });
+        // Try-Out Chart
+        var tryOutData = @json($tryOutInfo);
+        var series = tryOutData.map(function(tryOut) {
+            var averageScore = parseFloat(tryOut.average_score);
+            var formattedScore = averageScore % 1 === 0 ? averageScore.toFixed(0) : averageScore.toFixed(2); // Adjust decimal places
 
-            var tryOutOptions = {
-                chart: {
-                    type: 'bar',
-                    height: 300,
-                    zoom: {
-                        type: 'xy'
-                    }
-                },
-                series: series,
-                xaxis: {
-                    type: 'datetime',
-                },
-                yaxis: {
-                    title: {
-                        text: 'Skor Rata-Rata'
-                    }
-                },
-                tooltip: {
-                    custom: function({
-                        series,
-                        seriesIndex,
-                        dataPointIndex,
-                        w
-                    }) {
-                        var data = w.config.series[seriesIndex].data[dataPointIndex];
-                        var content = '<div class="p-2">';
-                        content += '<strong>' + w.config.series[seriesIndex].name + '</strong><br>';
-                        content += 'Date: ' + new Date(data.x).toLocaleDateString() + '<br>';
-                        content += 'Average Score: ' + data.y.toFixed(2) + '<br>';
-                        content += '<strong>Subtopics:</strong><br>';
-                        data.subtopics.forEach(function(subtopic) {
-                            content += subtopic.sub_mata_pelajaran + ': ' + subtopic.skor + '<br>';
-                        });
-                        content += '</div>';
-                        return content;
-                    }
-                }
+            return {
+                name: tryOut.mata_pelajaran,
+                data: [{
+                    x: tryOut.tanggal_pelaksanaan,
+                    y: formattedScore,
+                    subtopics: tryOut.subtopics
+                }]
             };
-
-            var chart = new ApexCharts(document.querySelector("#tryOutChart"), tryOutOptions);
-            chart.render();
         });
+
+        var tryOutOptions = {
+            chart: {
+                type: 'bar',
+                height: 300,
+                zoom: {
+                    type: 'xy'
+                }
+            },
+            series: series,
+            xaxis: {
+                type: 'datetime',
+            },
+            yaxis: {
+                title: {
+                    text: 'Skor Rata-Rata'
+                }
+            },
+            tooltip: {
+                custom: function({
+                    series,
+                    seriesIndex,
+                    dataPointIndex,
+                    w
+                }) {
+                    var data = w.config.series[seriesIndex].data[dataPointIndex];
+                    var content = '<div class="p-2">';
+                    content += '<strong>' + w.config.series[seriesIndex].name + '</strong><br>';
+                    content += 'Date: ' + new Date(data.x).toLocaleDateString() + '<br>';
+                    content += 'Average Score: ' + data.y.toFixed(2) + '<br>'; // Keep this for consistent tooltip
+                    content += '<strong>Subtopics:</strong><br>';
+                    data.subtopics.forEach(function(subtopic) {
+                        content += subtopic.sub_mata_pelajaran + ': ' + subtopic.skor + '<br>';
+                    });
+                    content += '</div>';
+                    return content;
+                }
+            }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#tryOutChart"), tryOutOptions);
+        chart.render();
+    });
 
         function openSubtopicsModal(subtopics) {
         // Parse the subtopics JSON string into an object

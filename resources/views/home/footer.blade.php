@@ -13,7 +13,7 @@
             <div data-aos="fade-up" data-aos-delay="200">
                 <h3 class="text-lg font-bold mb-4 border-b-2 border-yellow-400 pb-2 inline-block">Quick Links</h3>
                 <ul class="space-y-2">
-                    <li><a href="/About" class="hover:text-yellow-400 transition-colors duration-300">About Us</a></li>
+                    <li><a href="/home/about" class="hover:text-yellow-400 transition-colors duration-300">About Us</a></li>
                     <li><a href="/Services" class="hover:text-yellow-400 transition-colors duration-300">Services</a></li>
                     <li><a href="#Contact" class="hover:text-yellow-400 transition-colors duration-300">Contact</a></li>
                     <li><a href="/FAQ" class="hover:text-yellow-400 transition-colors duration-300">FAQ</a></li>

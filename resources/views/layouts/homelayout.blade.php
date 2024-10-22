@@ -7,7 +7,7 @@
     <title>@yield('title', 'Home')</title>
     <link rel="stylesheet" href="{{ asset('slick/slick.css') }}" />
     <link rel="stylesheet" href="{{ asset('slick/slick-theme.css') }}" />
-    <link rel="shortcut icon" href="{{ asset('images/reverse.png') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('images/Reverse.png') }}" type="image/x-icon">
     <link href="https://cdn.rawgit.com/michalsnik/aos/2.3.1/dist/aos.css" rel="stylesheet">
     <style>
         .preloader {
@@ -55,6 +55,40 @@
   75% {transform:translate(0,30px)}
   100%{transform:translate(0,0)}
 }
+
+.ulasan-container {
+    display: flex;
+    overflow-x: auto; /* Allows horizontal scrolling */
+    scroll-snap-type: x mandatory; /* For smooth scrolling */
+}
+
+.ulasan-item {
+    scroll-snap-align: start; /* Aligns the card to the start */
+    flex: 0 0 auto; /* Prevents flex-grow */
+    width: 250px; /* Set a width for the cards */
+    margin-right: 20px; /* Space between cards */
+    background-color: white; /* Card background */
+    border: 1px solid #ccc; /* Card border */
+    border-radius: 8px; /* Rounded corners */
+    padding: 16px; /* Padding inside the card */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow effect */
+}
+
+.star-rating {
+    display: flex;
+    justify-content: flex-start;
+    margin: 8px 0; /* Space above and below the stars */
+}
+
+.star {
+    color: lightgray; /* Default color for unfilled stars */
+    font-size: 20px; /* Size of the stars */
+}
+
+.star.filled {
+    color: gold; /* Color for filled stars */
+}
+
     </style>
 </head>
 <body class="bg-gray-100">

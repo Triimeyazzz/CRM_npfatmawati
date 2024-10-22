@@ -64,4 +64,28 @@ class DashboardController extends Controller
 
         return view('dashboard.data', compact('admins', 'siswa'));
     }
+    
+    public function getBirthdays()
+{
+    // Fetch students with their birthdates
+    $students = \App\Models\Siswa::select('nama', 'tanggal_lahir')->get();
+
+    // Format the data to include only the day and month (ignoring year)
+    $events = $students->map(function($student) {
+        // Format tanggal_lahir to only display month and day
+        $date = date('Y') . '-' . date('m-d', strtotime($student->tanggal_lahir));
+
+        return [
+            'title' => '🎉 ' . $student->nama . ' Birthday', // Add emoji to make it festive
+            'start' => $date,
+            'allDay' => true,
+            'className' => 'birthday-event' // Add custom class for birthday events
+        ];
+    });
+
+    return response()->json($events);
+}
+
+
+
 }

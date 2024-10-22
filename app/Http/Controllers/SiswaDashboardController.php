@@ -49,6 +49,8 @@ class SiswaDashboardController extends Controller
             'mulai_bimbingan' => $siswa->mulai_bimbingan,
             'jam_bimbingan' => $siswa->jam_bimbingan,
             'hari_bimbingan' => $siswa->hari_bimbingan,
+            'nama_ptn_tujuan' => $siswa->nama_ptn_tujuan,
+            'jurusan_tujuan' => $siswa->jurusan_tujuan,
         ];
     
         // Fetch payment information

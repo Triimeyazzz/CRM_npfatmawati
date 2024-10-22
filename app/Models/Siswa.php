@@ -42,7 +42,9 @@ class Siswa extends Model implements Authenticatable
         'user_id',
         'mulai_bimbingan', 
         'jam_bimbingan', 
-        'hari_bimbingan', 
+        'hari_bimbingan',
+        'nama_ptn_tujuan',
+        'jurusan_tujuan'
     ];
 
     protected $hidden = [
@@ -80,19 +82,11 @@ class Siswa extends Model implements Authenticatable
         static::deleting(function ($siswa) {
             $siswa->tryOuts()->delete();
             $siswa->absensis()->delete();
-            $siswa->messages()->delete();
+    
         });
     }
 
-    public function sentMessages()
-    {
-        return $this->morphMany(Message::class, 'sender');
-    }
-
-    public function receivedMessages()
-    {
-        return $this->morphMany(Message::class, 'receiver');
-    }
+    
 
     public function getFormattedIdAttribute()
 {

@@ -30,7 +30,7 @@ Route::get('/home/about', [HomeController::class, 'about'])->name('home.about');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-Route::post('/home/send-message', [HomeController::class, 'sendMessage'])->name('send.message');
+Route::post('/send-message', [HomeController::class, 'sendMessage'])->name('send.message');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -45,6 +45,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/events', [EventController::class, 'store']);
     Route::get('/events', [EventController::class, 'index']);
     Route::delete('/events/{id}', [EventController::class, 'destroy'])->name('events.destroy');
+
+    Route::get('/birthdays', [DashboardController::class, 'getBirthdays']);
+
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -68,8 +71,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/{siswa}', [SiswaController::class, 'show'])->name('show'); // Menampilkan detail siswa
         Route::get('/{id}/cetakqr', [SiswaController::class, 'cetakqr'])->name('cetakqr'); // Mencetak QR code
     });
-    Route::get('adminsiswa/qrcode/{id}', [SiswaController::class, 'cetakqr'])->name('adminsiswa.qrcode');
-    Route::get('adminsiswa/qrcode/download/{id}', [SiswaController::class, 'downloadQrCode'])->name('adminsiswa.qrcode.download');
+Route::post('admin/siswa/qrcode/bulk-download', [SiswaController::class, 'bulkDownload'])->name('adminsiswa.qrcode.bulkDownload');
+Route::get('/admin/siswa/export-pdf', [SiswaController::class, 'exportPdf'])->name('admin.siswa.export-pdf');
+Route::get('/siswa/export-excel', [SiswaController::class, 'exportExcel'])->name('siswa.export.excel');
+Route::get('admin/siswa/export/pdf', [SiswaController::class, 'exportPDF'])->name('siswa.export.pdf');
 
     Route::get('tryout', [TryOutController::class, 'index'])->name('tryout.index');
     Route::get('tryout/{siswa}/progress', [TryOutController::class, 'progress'])->name('tryout.progress');
@@ -89,7 +94,7 @@ Route::get('/pembayaran/financial-summary', [PembayaranController::class, 'finan
 Route::delete('/pembayaran/cicilan/{id}', [PembayaranController::class, 'destroyCicilan'])->name('pembayaran.cicilan.destroy');
 Route::post('/pembayaran/{id}/cancel', [PembayaranController::class, 'cancel'])->name('pembayaran.cancel');
 Route::post('/pembayaran/{id}/cancel-new', [PembayaranController::class, 'cancelNew'])->name('pembayaran.cancelNew');
-
+Route::delete('/pembayaran/{id}', [PembayaranController::class, 'destroy'])->name('pembayaran.destroy');
 Route::get('kirim-email', KirimEmailController::class)->name('kirimEmail');
 
 
@@ -127,10 +132,22 @@ Route::get('absensi/export/pdf', [AbsensiController::class, 'exportPDF'])->name(
 
 });
 
+Route::get('/generate', function() {
+    if (!file_exists(public_path('storage'))) {
+        \Illuminate\Support\Facades\Artisan::call('storage:link');
+        return 'The [public/storage] directory has been linked.';
+    }
+    return 'The "public/storage" directory already exists.';
+});
+
 
 Route::middleware(['auth:siswa'])->group(function () {
 
     Route::get('/siswa', [SiswaDashboardController::class, 'index'])->name('siswa.dashboard');
     Route::get('/siswa/attendance',[SiswaDashboardController::class, 'showAttendance'])->name('siswa.attendance');
 });
+
+Route::get('adminsiswa/qrcode/{id}', [SiswaController::class, 'cetakqr'])->name('adminsiswa.qrcode');
+Route::get('adminsiswa/qrcode/download/{id}', [SiswaController::class, 'downloadQrCode'])->name('adminsiswa.qrcode.download');
+
 require __DIR__.'/auth.php';

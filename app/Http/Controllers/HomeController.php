@@ -4,11 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use App\Models\Ulasan; // Make sure to import the Ulasan model
 use Exception;
 class HomeController extends Controller
 {
     public function index()
     {        
+        
+                $ulasan = Ulasan::with('siswa')->get(); // Eager load the siswa relationship
+                
+                
+
         $dataPisa = [
         'barData' => [
             'labels' => [
@@ -255,7 +261,7 @@ class HomeController extends Controller
             
         ],
     ];
-        return view('home.index',compact('dataPisa', 'contentData', 'komponenBelajar')); ;
+        return view('home.index', compact('dataPisa', 'contentData', 'komponenBelajar', 'ulasan'));
     }
 
     public function about()
@@ -264,33 +270,27 @@ class HomeController extends Controller
     }
 
     public function sendMessage(Request $request)
-{
-    // Validasi input form
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|max:255',
-        'message' => 'required|string|max:5000',
-    ]);
+    {
+        // Validasi data
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'message' => 'required|string',
+        ]);
 
-    // Data yang akan dikirim ke email
-    $emailData = [
-        'name' => $request->input('name'),
-        'email' => $request->input('email'),
-        'messageContent' => $request->input('message'),
-    ];
+        // Data untuk dikirimkan melalui email
+        $data = [
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'message' => $validated['message'],
+        ];
 
-    try {
-        // Mengirim email ke raifanramadhanputra06@gmail.com
-        Mail::send('emails.contact', $emailData, function($message) {
-            $message->to('raifanramadhanputra06@gmail.com')
-                    ->subject('Pesan Baru dari Formulir Kontak');
+        // Mengirim email menggunakan Mail::send
+        Mail::send('emails.message', $data, function ($mail) use ($validated) {
+            $mail->to('raifanramadhanputra06@gmail.com') // Email tujuan
+                ->subject('Pesan dari ' . $validated['name']);
         });
 
-        // Redirect dengan pesan sukses jika email terkirim
-        return back()->with('success', 'Pesan berhasil dikirim!');
-    } catch (Exception $e) {
-        // Tangani kesalahan pengiriman email
-        return back()->withErrors(['error' => 'Gagal mengirim pesan, silakan coba lagi.']);
+        return back()->with('success', 'Pesan Anda telah berhasil dikirim!');
     }
-}
 }

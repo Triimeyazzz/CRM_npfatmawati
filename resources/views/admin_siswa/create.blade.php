@@ -85,8 +85,20 @@
                     <option value="Alumni SMA">Alumni SMA</option>
                             </select>
                         </div>
+                        
+                        <div>
+                            <label for="nama_ptn_tujuan" class="block text-sm font-medium text-gray-700 mb-1">Ptn Tujuan</label>
+                            <input type="text" name="nama_ptn_tujuan" id="nama_ptn_tujuan" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        
+                <div>
+                            <label for="jurusan_tujuan" class="block text-sm font-medium text-gray-700 mb-1">Jurusan Tujuan</label>
+                            <input type="text" name="jurusan_tujuan" id="jurusan_tujuan" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
                     </div>
                 </div>
+
+
 
                 {{-- Informasi Sekolah --}}
                 <div class="bg-yellow-50 p-6 rounded-lg mb-8">

@@ -22,7 +22,7 @@
                         @foreach ([
                             'email', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 
                             'alamat', 'no_telpon', 'kota', 'no_wa', 'instagram', 
-                            'kelas', 'mulai_bimbingan', 'jam_bimbingan', 'hari_bimbingan'] as $field)
+                            'kelas', 'mulai_bimbingan', 'jam_bimbingan', 'hari_bimbingan', 'nama_ptn_tujuan', 'jurusan_tujuan'] as $field)
                             <div class="bg-gray-100 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
                                 <span class="font-medium text-purple-600">{{ ucwords(str_replace('_', ' ', $field)) }}:</span>
                                 <span class="text-gray-800">{{ $siswa[$field] }}</span>

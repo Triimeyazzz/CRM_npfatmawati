@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('siswa_id')->constrained('siswa')->onDelete('cascade');
             $table->decimal('jumlah', 10, 2);
-            $table->enum('status', ['pending', 'selesai', 'batal']);
+            $table->enum('status',  ['pending', 'selesai', 'batal']);
             $table->timestamps();
         });
     }

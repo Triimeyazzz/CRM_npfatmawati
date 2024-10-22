@@ -11,11 +11,20 @@ use ZipArchive;
 
 class TryOutController extends Controller
 {
-    public function index()
-    {
-        $siswas = Siswa::all();
-        return view('tryout.index', compact('siswas'));
-    }
+    public function index(Request $request)
+{
+    // Get the search query from the request
+    $search = $request->input('search');
+
+    // Retrieve the siswa records, filtering by name or ID if a search query is provided
+    $siswas = Siswa::when($search, function ($query) use ($search) {
+        return $query->where('nama', 'LIKE', "%{$search}%")
+                     ->orWhere('id', 'LIKE', "%{$search}%");
+    })->get();
+
+    return view('tryout.index', compact('siswas', 'search'));
+}
+
 
     
 

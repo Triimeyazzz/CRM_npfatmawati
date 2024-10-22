@@ -68,7 +68,7 @@ class PembayaranController extends Controller
         ]);
 
         Pembayaran::create($validated + ['status' => 'pending']);
-
+                
         return redirect()->route('pembayaran.index')->with('success', 'Pembayaran berhasil dibuat');
     }
 
@@ -143,7 +143,7 @@ class PembayaranController extends Controller
     public function cancel($id)
     {
         $pembayaran = Pembayaran::findOrFail($id);
-        $pembayaran->status = 'dibatalkan'; // Use quotes if assigning directly
+        $pembayaran->status = 'batal'; // Use quotes if assigning directly
         $pembayaran->save();
 
         return redirect()->route('pembayaran.index')->with('success', 'Pembayaran dibatalkan.');
@@ -163,5 +163,13 @@ class PembayaranController extends Controller
             return redirect()->route('pembayaran.index');
         }
         return response()->json(['success' => false]);
+    }
+
+    public function destroy($id)
+    {
+        $pembayaran = Pembayaran::findOrFail($id);
+        $pembayaran->delete();
+
+        return redirect()->route('pembayaran.index')->with('success', 'Pembayaran berhasil dihapus.');
     }
 }

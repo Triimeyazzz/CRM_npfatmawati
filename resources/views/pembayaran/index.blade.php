@@ -3,7 +3,11 @@
 @section('content')
 <div class="container mx-auto px-4">
     <h1 class="text-4xl font-bold mb-8 text-center text-purple-700">Daftar Pembayaran</h1>
-
+    @if(session('success'))
+        <div id="success-message" class="bg-purple-500 text-white p-4 rounded mb-4 transition-opacity duration-1000 ease-in-out">
+            {{ session('success') }}
+        </div>
+    @endif
     {{-- Form Pencarian --}}
     <div class="mb-6">
         <form action="{{ route('pembayaran.index') }}" method="GET" class="flex justify-end">
@@ -82,6 +86,11 @@
                             <form action="{{ route('pembayaran.cancel', $item->id) }}" method="POST" class="inline-block ml-2">
                                 @csrf
                                 <button type="submit" class="text-red-600 hover:text-red-900">Batalkan</button>
+                            </form>
+                            <form action="{{ route('pembayaran.destroy', $item->id) }}" method="POST" class="inline-block ml-2 ">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>
                             </form>
                         </td>
                     </tr>

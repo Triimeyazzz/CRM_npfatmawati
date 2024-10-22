@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mx-auto p-6">
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex justify-between items-center mb-6 sticky top-0 bg-white z-10 p-4 shadow-md">
         <h1 class="text-3xl font-bold text-purple-800">Daftar Absensi</h1>
         <div class="flex space-x-4">
             <a href="{{ route('absensi.scan') }}" class="bg-purple-600 text-white px-4 py-2 rounded-lg shadow hover:bg-purple-700 transition">
@@ -11,17 +11,17 @@
             <a href="{{ route('absensi.create') }}" class="bg-purple-600 text-white px-4 py-2 rounded-lg shadow hover:bg-purple-700 transition">
                 Buat Absen
             </a>
-            <button onclick="exportToExcel()" class="bg-orange-600 text-white px-4 py-2 rounded-lg shadow hover:bg-orange-700 transition">
+            <a href="{{ route('absensi.export.excel') }}" class="bg-orange-600 text-white px-4 py-2 rounded-lg shadow hover:bg-orange-700 transition">
                 Ekspor ke Excel
-            </button>
-            <button onclick="exportToPDF()" class="bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 transition">
+            </a>
+            <a href="{{ route('absensi.export.pdf') }}" class="bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 transition">
                 Ekspor ke PDF
-            </button>
+            </a>
         </div>
     </div>
 
     <div class="bg-yellow-100 shadow-md rounded-lg p-6 mb-6">
-        <form action="{{ route('absensi.index') }}" method="GET" class="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4 mb-4">
+        <form action="{{ route('absensi.index') }}" method="GET" class="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4 mb-4 ">
             <input type="text" name="search" placeholder="Cari Nama Siswa..." value="{{ request('search') }}" class="border p-2 rounded-md w-full">
             <select name="kelas" class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full">
                 <option value="">Pilih Kelas</option>
@@ -67,7 +67,7 @@
                                     {{ $absensi->siswa->nama }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $absensi->siswa->kelas }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $absensi->status }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 ">{{ $absensi->status }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $absensi->keterangan }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     <button onclick="confirmDelete({{ $absensi->id }})" class="bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 transition">
@@ -125,6 +125,7 @@
 
 @endsection
 
+
 @push('scripts')
 <script>
     let deletingId = null;
@@ -136,7 +137,6 @@
 
     function deleteAbsensi() {
         if (deletingId) {
-            // Send DELETE request to server
             fetch(`/absensi/${deletingId}`, {
                 method: 'DELETE',
                 headers: {
@@ -146,15 +146,15 @@
             })
             .then(response => {
                 if (response.ok) {
-                    location.reload(); // Reload to update the list
+                    location.reload();
                 } else {
                     alert('Gagal menghapus absensi.');
-                    console.error('Delete failed:', response.statusText); // Debugging
+                    console.error('Delete failed:', response.statusText);
                 }
             })
             .catch(error => {
-                console.error('Error:', error); // Log any errors
-                alert('Gagal menghapus absensi.'); // Show an error message
+                console.error('Error:', error);
+                alert('Gagal menghapus absensi.');
             });
         }
         closeModal('deleteModal');
@@ -165,24 +165,47 @@
     }
 
     function showStudentAbsences(studentId) {
-    // Get the absensi data for the student from a variable passed to the view
-    const absensiData = @json($absensiData); // Pastikan ini berisi data absensi siswa
-    const studentAbsences = absensiData.filter(absensi => absensi.siswa_id === studentId);
+        const absensiData = @json($absensiData);
+        const studentAbsences = absensiData.filter(absensi => absensi.siswa_id === studentId);
 
-    // Generate table rows with conditional styling
-    const content = studentAbsences.map(absensi => `
-        <tr class="${absensi.status === 'Hadir' ? 'bg-green-100' : 'bg-red-100'}">
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${absensi.siswa.nama}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${absensi.tanggal}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium ${absensi.status === 'Hadir' ? 'text-green-600' : 'text-red-600'}">${absensi.status}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${absensi.keterangan}</td>
-        </tr>
-    `).join('');
+        const content = studentAbsences.map(absensi => `
+            <tr class="${absensi.status === 'Hadir' ? 'bg-green-100' : 'bg-red-100'}">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${absensi.siswa.nama}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${absensi.tanggal}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium ${absensi.status === 'Hadir' ? 'text-green-600' : 'text-red-600'}">${absensi.status}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${absensi.keterangan}</td>
+            </tr>
+        `).join('');
 
-    document.getElementById('studentAbsencesContent').innerHTML = content;
-    document.getElementById('studentAbsencesModal').classList.remove('hidden');
-}
+        document.getElementById('studentAbsencesContent').innerHTML = content;
+        document.getElementById('studentAbsencesModal').classList.remove('hidden');
+    }
 
+    function exportToExcel() {
+        // Implement Excel export logic here
+       fetch(`/absensi/export/excel`, {
+                method: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                },
+        }) 
+    }
 
+    function exportToPDF() {
+        // Implement PDF export logic here
+        fetch(`/absensi/export/pdf`, {
+                method: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                },
+        })
+    }
+
+    // Remove references to 'interact' if it's not being used
+    // If you need to use 'interact', make sure to include the library
+    // interact('.draggable').draggable({
+    //     // interact options here
+    // });
 </script>
-@endpush

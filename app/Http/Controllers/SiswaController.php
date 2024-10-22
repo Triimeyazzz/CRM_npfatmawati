@@ -8,42 +8,51 @@ use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\Response;
+use ZipArchive;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exports\SiswaExport;
+use Maatwebsite\Excel\Facades\Excel;
 class SiswaController extends Controller
 {
     public function index(Request $request)
-    {
-        $search = $request->input('search', '');
-        $kelas = $request->input('kelas', '');
+{
+    $search = $request->input('search', '');
+    $kelas = $request->input('kelas', '');
 
-        $siswaQuery = Siswa::query();
+    $siswaQuery = Siswa::query();
 
-        if ($search) {
-            $siswaQuery->where('nama', 'like', "%{$search}%");
-        }
-
-        if ($kelas) {
-            $siswaQuery->where('kelas', $kelas);
-        }
-
-        $siswa = $siswaQuery->get();
-
-        foreach ($siswa as $item) {
-            // Buat QR Code
-            $qrCode = QrCode::create($item->id)
-                ->setSize(300)
-                ->setMargin(10); // Atur margin jika perlu
-
-            // Konversi QR Code menjadi string PNG
-            $writer = new PngWriter();
-            $item->qr_code = $writer->write($qrCode)->getString();
-        }
-
-        return view('admin_siswa.index', [
-            'siswa' => $siswa,
-            'total_siswa' => $siswa->count(),
-        ]);
+    if ($search) {
+        $siswaQuery->where('nama', 'like', "%{$search}%");
     }
+
+    if ($kelas) {
+        $siswaQuery->where('kelas', $kelas);
+    }
+
+    // Dapatkan daftar siswa
+    $siswa = $siswaQuery->get();
+
+    // Hitung total siswa
+    $total_siswa = $siswa->count();
+
+    foreach ($siswa as $item) {
+        // Buat QR Code
+        $qrCode = QrCode::create($item->id)
+            ->setSize(300)
+            ->setMargin(10); // Atur margin jika perlu
+
+        // Konversi QR Code menjadi string PNG
+        $writer = new PngWriter();
+        $item->qr_code = $writer->write($qrCode)->getString();
+    }
+
+    return view('admin_siswa.index', [
+        'siswa' => $siswa,
+        'total_siswa' => $total_siswa, // Kirim total siswa ke view
+    ]);
+}
+
 
     public function cetakqr($id)
     {
@@ -51,7 +60,8 @@ class SiswaController extends Controller
             ->setSize(300)
             ->setMargin(10); // Atur margin jika perlu
 
-        $logoPath = public_path('images/reverse.png'); // Ganti dengan path logo Anda
+        $logoPath = asset('/images/reverse.png'); // Ganti dengan path logo Anda
+        $logo = null;
         if (file_exists($logoPath)) {
             $logo = Logo::create($logoPath)
                 ->setResizeToWidth(100)
@@ -77,7 +87,8 @@ class SiswaController extends Controller
             ->setMargin(10); // Atur margin jika perlu
 
         // Tambahkan logo
-        $logoPath = public_path('images/logo color.png'); // Ganti dengan path logo Anda
+        $logo = null;
+        $logoPath = asset('images/logo color.png'); // Ganti dengan path logo Anda
         if (file_exists($logoPath)) {
             $logo = Logo::create($logoPath)
                 ->setResizeToWidth(100)
@@ -129,7 +140,9 @@ class SiswaController extends Controller
             'kelas' => 'nullable|string',
             'mulai_bimbingan' => 'required|date',
             'jam_bimbingan' => 'required|date_format:H:i',
-                    'hari_bimbingan' => 'required|array'
+            'hari_bimbingan' => 'required|array',
+            'nama_ptn_tujuan' => 'nullable|string', // Validasi nama PTN tujuan
+            'jurusan_tujuan' => 'nullable|string',  // Validasi jurusan yang dituju
         ]);
 
         $siswa = new Siswa();
@@ -142,12 +155,11 @@ class SiswaController extends Controller
 
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('public/fotos', $filename);
-            $siswa->foto = $filename;
+            $filename = $file->getClientOriginalName(); // Mendapatkan nama asli file
+            $file->storeAs('photos', $filename, 'public'); // Menyimpan file ke folder 'photos' di disk 'public'
+            $siswa->foto = $filename; // Menyimpan hanya nama file ke dalam database
         }
-
-        $siswa->save();
+        
 
         $siswa->hari_bimbingan = json_encode($request->input('hari_bimbingan'));
         $siswa->save();
@@ -194,14 +206,33 @@ class SiswaController extends Controller
             'email_ibu' => 'nullable|string|email|max:255',
             'mulai_bimbingan' => 'required|date',
             'jam_bimbingan' => 'required|date_format:H:i',
-            'hari_bimbingan' => 'required|array'
+            'hari_bimbingan' => 'required|array',
+             'nama_ptn_tujuan' => 'nullable|string', // Validasi nama PTN tujuan
+            'jurusan_tujuan' => 'nullable|string',  // Validasi jurusan yang dituju
         ]);
 
-        // Handle file upload if applicable
-        if ($request->hasFile('foto')) {
-            $path = $request->file('foto')->store('photos', 'public');
-            $siswa->foto = $path;
+            // Handle file upload if applicable
+    if ($request->hasFile('foto')) {
+        // Delete the old photo if it exists
+        if ($siswa->foto) {
+            // You may want to adjust this path based on your storage setup
+            $oldPhotoPath = public_path('storage/fotos/' . $siswa->foto);
+            if (file_exists($oldPhotoPath)) {
+                unlink($oldPhotoPath); // Delete old photo
+            }
         }
+
+        // Save the new photo
+        $file = $request->file('foto');
+        $filename = time() . '.' . $file->getClientOriginalExtension();
+        $destinationPath = '/home/u174913696/domains/newprimagamafatmawati.com/public_html/storage/fotos'; // Update this path
+        $file->move($destinationPath, $filename);
+
+        // Update the foto attribute
+        $siswa->foto = $filename;
+    }
+    $siswa->save();
+
 
         // Update the Siswa instance with the validated data
         $validated['hari_bimbingan'] = json_encode($validated['hari_bimbingan']);
@@ -217,12 +248,73 @@ class SiswaController extends Controller
         ]);
     }
 
-    public function destroy(Siswa $siswa)
+    public function destroy($id)
+{
     {
-        $siswa->delete();
+        $id->delete();
         return redirect()->route('adminsiswa.index')->with('success', 'Siswa berhasil dihapus.');
     }
-
-
-
 }
+
+public function bulkDownload(Request $request)
+{
+    // Validate the selected IDs
+    $request->validate([
+        'selected_ids' => 'required|array',
+        'selected_ids.*' => 'exists:siswa,id',
+    ]);
+
+    // Retrieve the selected siswa IDs
+    $selectedIds = $request->input('selected_ids');
+
+    // Create a zip file
+    $zip = new \ZipArchive();
+    $zipFileName = 'qr_codes.zip';
+    $zipFilePath = storage_path($zipFileName);
+    
+    if ($zip->open($zipFilePath, \ZipArchive::CREATE) === TRUE) {
+        foreach ($selectedIds as $id) {
+            // Retrieve the student by ID
+            $student = Siswa::find($id);
+
+            // Generate the QR Code image URL
+            $qrCodeUrl = route('adminsiswa.qrcode', $id);
+            $qrCodeImage = file_get_contents($qrCodeUrl);
+
+            // Use the student's name for the filename
+            $fileName = strtolower(str_replace(' ', '_', $student->nama)); // Replace spaces with underscores and make lowercase
+            $zip->addFromString("qrcode_{$fileName}_{$id}.png", $qrCodeImage);
+        }
+        $zip->close();
+    }
+
+    // Return the zip file as a response
+    return response()->download($zipFilePath)->deleteFileAfterSend(true);
+}
+
+public function exportPdf() {
+    // Get all absensi records
+    $siswa = Siswa::all(); // Change variable name to $absensi
+    $data = [
+        'siswa' => $siswa // Ensure the variable name matches the view's expected variable
+    ];
+
+    // Generate PDF from the view
+    $pdf = PDF::loadView('admin_siswa.pdf', $data);
+
+    // Return the PDF download
+    return $pdf->download('Data-Siswa.pdf');
+}
+
+
+    public function exportExcel(Request $request )
+    {
+        $search = $request->input('search', '');
+    $kelas = $request->input('kelas', '');
+
+    return Excel::download(new SiswaExport($search, $kelas), 'daftar_siswa_terfilter.xlsx');
+
+        return Excel::download(new SiswaExport, 'daftar_siswa.xlsx');
+    }
+}
+

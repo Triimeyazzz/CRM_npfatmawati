@@ -72,6 +72,16 @@
                             </div>
 
                             <div>
+                            <label for="nama_ptn_tujuan" class="block text-sm font-medium text-gray-700 mb-1">Ptn Tujuan</label>
+                            <input type="text" name="nama_ptn_tujuan" id="nama_ptn_tujuan" value="{{ old('nama_ptn_tujuan', $siswa->nama_ptn_tujuan) }}" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        
+                <div>
+                            <label for="jurusan_tujuan" class="block text-sm font-medium text-gray-700 mb-1">Jurusan Tujuan</label>
+                            <input type="text" name="jurusan_tujuan" id="jurusan_tujuan" value="{{ old('jurusan_tujuan', $siswa->jurusan_tujuan) }}" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+
+                            <div>
                                 <label for="foto" class="block text-sm font-medium text-gray-700 mb-1">Foto</label>
                                 <input type="file" name="foto" id="foto" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 @if ($siswa->foto)
@@ -107,24 +117,54 @@
                         <h3 class="text-xl font-semibold mb-4">Informasi Orang Tua</h3>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label for="nama_ayah" class="block text-sm font-medium text-gray-700 mb-1">Nama Ayah</label>
-                                <input type="text" name="nama_ayah" id="nama_ayah" value="{{ old('nama_ayah', $siswa->nama_ayah) }}" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
-                            </div>
+            <label for="nama_ayah" class="block text-sm font-medium text-gray-700 mb-1">Nama Ayah</label>
+            <input type="text" name="nama_ayah" value="{{old ('nama_ayah', $siswa->nama_ayah)}}" id="nama_ayah" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+        </div>
 
-                            <div>
-                                <label for="no_telpon_ayah" class="block text-sm font-medium text-gray-700 mb-1">No Telpon Ayah</label>
-                                <input type="text" name="no_telpon_ayah" id="no_telpon_ayah" value="{{ old('no_telpon_ayah', $siswa->no_telpon_ayah) }}" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            </div>
+        <div>
+            <label for="pekerjaan_ayah" class="block text-sm font-medium text-gray-700 mb-1">Pekerjaan Ayah</label>
+            <input type="text" name="pekerjaan_ayah" id="pekerjaan_ayah" value="{{old ('pekerjaan_ayah', $siswa->pekerjaan_ayah)}}" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
 
-                            <div>
-                                <label for="nama_ibu" class="block text-sm font-medium text-gray-700 mb-1">Nama Ibu</label>
-                                <input type="text" name="nama_ibu" id="nama_ibu" value="{{ old('nama_ibu', $siswa->nama_ibu) }}" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
-                            </div>
+        <div>
+            <label for="no_telp_hp_ayah" class="block text-sm font-medium text-gray-700 mb-1">No Telpon/HP Ayah</label>
+            <input type="text" name="no_telp_hp_ayah" id="no_telp_hp_ayah" value="{{old ('no_telp_ayah', $siswa->no_telp_ayah)}}" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
 
-                            <div>
-                                <label for="no_telpon_ibu" class="block text-sm font-medium text-gray-700 mb-1">No Telpon Ibu</label>
-                                <input type="text" name="no_telpon_ibu" id="no_telpon_ibu" value="{{ old('no_telpon_ibu', $siswa->no_telpon_ibu) }}" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            </div>
+        <div>
+            <label for="no_wa_id_line_ayah" class="block text-sm font-medium text-gray-700 mb-1">No WA/ID Line Ayah</label>
+            <input type="text" name="no_wa_id_line_ayah" id="no_wa_id_line_ayah" value="{{old ('no_wa_id_line_ayah', $siswa->no_wa_id_line_ayah)}}" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div>
+            <label for="email_ayah" class="block text-sm font-medium text-gray-700 mb-1">Email Ayah</label>
+            <input type="email" name="email_ayah" id="email_ayah" value="{{old ('email_ayah', $siswa->email_ayah)}}" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+<div>
+            <label for="nama_ibu" class="block text-sm font-medium text-gray-700 mb-1">Nama Ibu</label>
+            <input type="text" name="nama_ibu" id="nama_ibu" value="{{ old('nama_ibu', $siswa->nama_ibu)}}" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+        </div>
+
+        <div>
+            <label for="pekerjaan_ibu" class="block text-sm font-medium text-gray-700 mb-1">Pekerjaan Ibu</label>
+            <input type="text" name="pekerjaan_ibu" id="pekerjaan_ibu" value="{{ old('pekerjaan_ibu', $siswa->pekerjaan_ibu)}}" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div>
+            <label for="no_telp_hp_ibu" class="block text-sm font-medium text-gray-700 mb-1">No Telpon/HP Ibu</label>
+            <input type="text" name="no_telp_hp_ibu" id="no_telp_hp_ibu" value="{{ old('no_telp_hp_ibu', $siswa->no_telp_hp_ibu)}}" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div>
+            <label for="no_wa_id_line_ibu" class="block text-sm font-medium text-gray-700 mb-1">No WA/ID Line Ibu</label>
+            <input type="text" name="no_wa_id_line_ibu" id="no_wa_id_line_ibu" value="{{ old('no_wa_id_line_ibu', $siswa->no_wa_id_line_ibu)}}" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div>
+            <label for="email_ibu" class="block text-sm font-medium text-gray-700 mb-1">Email Ibu</label>
+            <input type="email" name="email_ibu" id="email_ibu" value="{{ old('email_ibu', $siswa->email_ibu)}}" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
                         </div>
                     </div>
 
@@ -134,7 +174,20 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label for="kelas" class="block text-sm font-medium text-gray-700 mb-1">Kelas</label>
-                                <input type="text" name="kelas" id="kelas" value="{{ old('kelas', $siswa->kelas) }}" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                                <select name="kelas" id="kelas" class="w-full p-3 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+    <option value="">Pilih Kelas</option>
+    <option value="Kelas 4 SD" {{ old('kelas', $siswa->kelas) == 'Kelas 4 SD' ? 'selected' : '' }}>Kelas 4 SD</option>
+    <option value="Kelas 5 SD" {{ old('kelas', $siswa->kelas) == 'Kelas 5 SD' ? 'selected' : '' }}>Kelas 5 SD</option>
+    <option value="Kelas 6 SD" {{ old('kelas', $siswa->kelas) == 'Kelas 6 SD' ? 'selected' : '' }}>Kelas 6 SD</option>
+    <option value="Kelas 7 SMP" {{ old('kelas', $siswa->kelas) == 'Kelas 7 SMP' ? 'selected' : '' }}>Kelas 7 SMP</option>
+    <option value="Kelas 8 SMP" {{ old('kelas', $siswa->kelas) == 'Kelas 8 SMP' ? 'selected' : '' }}>Kelas 8 SMP</option>
+    <option value="Kelas 9 SMP" {{ old('kelas', $siswa->kelas) == 'Kelas 9 SMP' ? 'selected' : '' }}>Kelas 9 SMP</option>
+    <option value="Kelas 10 SMA" {{ old('kelas', $siswa->kelas) == 'Kelas 10 SMA' ? 'selected' : '' }}>Kelas 10 SMA</option>
+    <option value="Kelas 11 SMA" {{ old('kelas', $siswa->kelas) == 'Kelas 11 SMA' ? 'selected' : '' }}>Kelas 11 SMA</option>
+    <option value="Kelas 12 SMA" {{ old('kelas', $siswa->kelas) == 'Kelas 12 SMA' ? 'selected' : '' }}>Kelas 12 SMA</option>
+    <option value="Alumni SMA" {{ old('kelas', $siswa->kelas) == 'Alumni SMA' ? 'selected' : '' }}>Alumni SMA</option>
+</select>
+
                             </div>
 
                             <div>

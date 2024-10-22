@@ -2,92 +2,55 @@
 @extends('layouts.homelayout')
 
 @section('content')
-    <div class="mx-auto w-full max-w-screen-xl mt-3 rounded-3xl">
-        <div class="slider">
-            <div>
-                <img
-                    src="{{ asset('images/spanduk 459x217 cmyk.jpg') }}"
-                    alt="spanduk"
-                    class="w-full h-auto object-cover rounded-3xl"
-                />
-            </div>
-            <div>
-                <img
-                    src="{{ asset('images/main4.jpg') }}"
-                    alt="another spanduk"
-                    class="w-full h-auto object-cover rounded-3xl"
-                />
-            </div>
-            <div>
-                <img
-                    src="{{ asset('images/main2.jpg') }}"
-                    alt="another spanduk"
-                    class="w-full h-auto object-cover rounded-3xl"
-                />
-            </div>
-            <div>
-                <img
-                    src="{{ asset('images/banner1.jpg') }}"
-                    alt="spanduk"
-                    class="w-full h-auto object-cover rounded-3xl"
-                />
-            </div>
-        </div>
-    </div>
-    <div class="relative overflow-hidden bg-gradient-to-br from-blue-100 to-purple-100 text-black py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h1 class="text-4xl font-bold mb-4 text-purple-900">
-                    Fun Facts about <span class="text-yellow-500">Education in Indonesia</span>
-                </h1>
-                <p class="text-xl text-gray-700">Temukan informasi menarik tentang lanskap pendidikan di Indonesia</p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Large fact card -->
-                <div class="md:col-span-2 bg-gradient-to-br from-green-400 to-blue-500 rounded-3xl shadow-xl p-8 text-white transform hover:scale-105 transition-transform duration-300">
-                    <h2 class="text-3xl font-bold mb-4">Did you know?</h2>
-                    <p class="text-xl">Indonesia memiliki lebih dari 170.000 sekolah dasar, menjadikannya salah satu sistem sekolah terbesar di dunia!</p>
+<div class="mx-auto w-full max-w-screen-xl mt-3 p-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Left Column - Building Info -->
+        <div class=" rounded-3xl p-6 ">
+            <div class="flex items-start space-x-4">
+                <div class="w-1/2">
+                    <div class="relative rounded-2xl overflow-hidden">
+                        <img 
+                            src="{{ asset('images/fatmawati gedung copy 1.png') }}" 
+                            alt="Primagama Building"
+                            class="w-full h-auto object-cover"
+                        >
+                    </div>
                 </div>
-                
-                <!-- Small fact card -->
-                <div class="bg-gradient-to-br from-yellow-300 to-red-400 rounded-3xl shadow-xl p-6 text-white transform hover:scale-105 transition-transform duration-300">
-                    <h2 class="text-2xl font-bold mb-3">Language Facts</h2>
-                    <p class="text-lg">Bahasa Indonesia adalah bahasa pengantar utama, tetapi ada lebih dari 700 bahasa asli di negara ini!</p>
-                </div>
-                <div class="bg-gradient-to-br from-yellow-300 to-red-400 rounded-3xl shadow-xl p-6 text-white transform hover:scale-105 transition-transform duration-300">
-                    <h2 class="text-2xl font-bold mb-3">Compulsory Education Program</h2>
-                    <p class="text-lg">Pemerintah Indonesia menetapkan program Wajib Belajar 12 Tahun, yang mencakup pendidikan dasar (SD dan SMP) dan pendidikan menengah (SMA atau SMK).                    </p>
-                </div>
-                <div class="bg-gradient-to-br from-yellow-300 to-red-400 rounded-3xl shadow-xl p-6 text-white transform hover:scale-105 transition-transform duration-300">
-                    <h2 class="text-2xl font-bold mb-3">Various Curriculum</h2>
-                    <p class="text-lg"> Indonesia sering memperbarui kurikulum pendidikan, seperti Kurikulum 2013 yang bertujuan meningkatkan kompetensi siswa dalam hal pengetahuan, keterampilan, dan karakter.</p>
-                </div>
-                <!-- Medium fact card -->
-                <div class="bg-gradient-to-br from-purple-400 to-pink-500 rounded-3xl shadow-xl p-7 text-white transform hover:scale-105 transition-transform duration-300">
-                    <h2 class="text-2xl font-bold mb-3">Literacy Rate</h2>
-                    <p class="text-lg">Angka melek huruf di Indonesia telah meningkat drastis, mencapai lebih dari 95% di kalangan remaja berusia 15-24 tahun!</p>
-                </div>
-                
-                <!-- Small fact card -->
-                <div class="bg-gradient-to-br from-blue-400 to-indigo-500 rounded-3xl shadow-xl p-6 text-white transform hover:scale-105 transition-transform duration-300">
-                    <h2 class="text-2xl font-bold mb-3">University Growth</h2>
-                    <p class="text-lg">Jumlah universitas di Indonesia meningkat lebih dari dua kali lipat sejak tahun 1990an!</p>
-                </div>
-                
-                <!-- Large fact card -->
-                <div class="md:col-span-2 bg-gradient-to-br from-red-400 to-yellow-500 rounded-3xl shadow-xl p-8 text-white transform hover:scale-105 transition-transform duration-300">
-                    <h2 class="text-3xl font-bold mb-4">Educational Diversity</h2>
-                    <p class="text-xl">Sistem pendidikan di Indonesia mencakup sekolah negeri, swasta, dan Islam, yang menawarkan beragam pengalaman pendidikan!</p>
+                <div class="w-1/2 mt-7">
+                    <h2 class="text-2xl font-bold mb-2 text-purple-800">NEW PRIMAGAMA FATMAWATI</h2>
+                    <p class="text-sm text-black">
+                        Jl. RS. Fatmawati Raya No.4 J,<br>
+                        RT3/RW5, Cilandak Barat,<br>
+                        Cilandak, Jakarta Selatan
+                    </p>
                 </div>
             </div>
         </div>
-        
-        <!-- Decorative elements -->
-        <div class="absolute top-10 left-10 w-20 h-20 bg-yellow-300 rounded-full opacity-50"></div>
-        <div class="absolute bottom-10 right-10 w-32 h-32 bg-purple-300 rounded-full opacity-50"></div>
-        <div class="absolute top-1/2 left-1/4 w-16 h-16 bg-green-300 rounded-full opacity-50"></div>
+
+        <!-- Right Column - Slider -->
+        <div class="rounded-3xl overflow-hidden">
+            <div class="relative">
+                <div class="slider">
+                    @foreach(['Spanduk 459x217 cmyk.jpg', 'main4.jpg', 'main2.jpg', 'banner1.jpg', 'main5.jpeg', 'main6.jpeg', 'main7.jpeg', 'main8.jpeg'] as $image)
+                        <div>
+                            <img 
+                                src="{{ asset('images/' . $image) }}" 
+                                alt="Primagama Slide"
+                                class="w-full h-auto object-cover rounded-3xl"
+                            >
+                        </div>
+                    @endforeach
+                </div>
+                <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                    @foreach(range(1, 8) as $dot)
+                        <button class="w-2 h-2 rounded-full bg-white/50 hover:bg-white transition-colors duration-200"></button>
+                    @endforeach
+                </div>
+            </div>
+        </div>
     </div>
+</div>
+<x-education-facts />
     <div class="bg-gradient-to-br from-purple-100 to-blue-100 text-gray-800 relative z-30 py-16 px-4 sm:px-6 lg:px-8 mt-16">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-12">
@@ -231,6 +194,42 @@
     </div>
 </div>
 
+<h2 class="text-4xl font-bold text-center mb-12 text-purple-800 mt-16">Ulasan Siswa</h2>
+@if($ulasan->isNotEmpty())
+    <div class="bg-gradient-to-r from-purple-100 to-blue-100 py-16 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="slider"> <!-- Use the slider class here -->
+                @foreach($ulasan as $review)
+                    <div class="flex flex-col items-center transform hover:scale-105 transition-all duration-300 rounded-lg shadow-lg bg-white p-6 m-4">
+                        <div class="flex items-center justify-center bg-purple-200 p-4 rounded-full shadow-md mb-4">
+                            <img 
+                                src="{{ asset('/storage/foto_profile/' . $review->foto_profile) }}" 
+                                alt="{{ $review->nama_pemberi_ulasan }}" 
+                                class="w-24 h-24 object-cover rounded-full" 
+                            />
+                        </div>
+                        <h3 class="text-lg font-semibold text-center text-purple-800 mb-1">{{ $review->nama_pemberi_ulasan }}</h3>
+                        <h5 class="text-sm text-gray-500 mb-2 text-center">{{ $review->tipe_pemberi_ulasan }}</h5>
+                        <div class="star-rating flex justify-center mb-2">
+                            @for($i = 1; $i <= 5; $i++)
+                                <span class="star text-lg {{ $i <= $review->penilaian ? 'text-yellow-500' : 'text-gray-300' }}">★</span>
+                            @endfor
+                        </div>
+                        <p class="text-gray-700 text-center comment-preview mb-4" id="comment-preview-{{ $review->id }}" style="transition: height 0.3s ease; overflow: hidden;">
+                            {{ Str::limit($review->komentar, 100) }}...
+                            <span class="hidden comment-full" id="comment-full-{{ $review->id }}">{{ $review->komentar }}</span>
+                        </p>
+                        <button class="text-blue-500 hover:underline mt-2 see-more" data-comment-id="{{ $review->id }}">
+                            Lihat Selengkapnya
+                        </button>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+@else
+    <p class="text-center text-gray-500">Tidak ada ulasan yang tersedia.</p>
+@endif
 <!-- Contact Section -->
 <div id="contact" class="bg-gradient-to-br from-purple-600 to-indigo-800 py-16 relative z-20 mt-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -331,23 +330,57 @@
     </div>
     @endsection
     @section('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+<!-- Include Slick CSS and JS -->
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 
-    <script>
-        $(document).ready(function(){
-            $('.slider').slick({
-                dots: true,
-                infinite: true,
-                speed: 500,
-                slidesToShow: 1,
-                slidesToScroll: 1,
-                autoplay: true,
-                autoplaySpeed: 3000,
-                arrows: true,
-                adaptiveHeight: true,
-                fade: true,
-            });
+<script>
+    $(document).ready(function(){
+        $('.slider').slick({
+            dots: true,
+            infinite: true,
+            speed: 500,
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            autoplay: true,
+            autoplaySpeed: 3000,
+            arrows: true,
+            adaptiveHeight: true,
+            fade: true,
         });
+
+        // Handle the "See More" button click
+        $('.see-more').click(function() {
+            const commentId = $(this).data('comment-id');
+            const preview = document.getElementById(`comment-preview-${commentId}`);
+            const fullComment = document.getElementById(`comment-full-${commentId}`);
+
+            // Check if fullComment is found
+            if (!fullComment) {
+                console.error(`Full comment with ID ${commentId} not found.`);
+                return; // Exit if not found
+            }
+
+            if (fullComment.classList.contains('hidden')) {
+                fullComment.classList.remove('hidden');
+                preview.innerHTML = fullComment.innerHTML; // Show full comment
+                this.textContent = 'Lihat Lebih Sedikit'; // Change button text
+            } else {
+                fullComment.classList.add('hidden');
+                preview.innerHTML = preview.innerHTML.split('...')[0] + '...'; // Limit comment again and add ellipsis
+                this.textContent = 'Lihat Selengkapnya'; // Reset button text
+            }
+
+            // Adjust height
+            setTimeout(() => {
+                const newHeight = preview.scrollHeight + 'px';
+                preview.style.height = newHeight;
+            }, 0);
+        });
+    });
 
         const dataPisa = @json($dataPisa['barData']);
         
@@ -452,5 +485,18 @@ document.addEventListener('DOMContentLoaded', (event) => {
     function closeModal() {
         document.getElementById('modal').classList.add('hidden');
     }
+    
+    const swiper = new Swiper('.ulasan-carousel', {
+        slidesPerView: 1,
+        spaceBetween: 10,
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+    });
     </script>
 @endsection
