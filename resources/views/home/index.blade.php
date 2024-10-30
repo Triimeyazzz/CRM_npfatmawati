@@ -41,17 +41,16 @@
                         </div>
                     @endforeach
                 </div>
-                <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                    @foreach(range(1, 8) as $dot)
-                        <button class="w-2 h-2 rounded-full bg-white/50 hover:bg-white transition-colors duration-200"></button>
-                    @endforeach
-                </div>
-            </div>
+                
         </div>
     </div>
 </div>
+
+<x-news-slider />
+
 <x-education-facts />
-    <div class="bg-gradient-to-br from-purple-100 to-blue-100 text-gray-800 relative z-30 py-16 px-4 sm:px-6 lg:px-8 mt-16">
+
+<div class="bg-gradient-to-br from-purple-100 to-blue-100 text-gray-800 relative z-30 py-16 px-4 sm:px-6 lg:px-8 mt-16">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-12">
                 <h1 class="text-5xl font-bold mb-4 text-purple-800 animate-pulse">
@@ -135,37 +134,141 @@
     </div>
     
 
-    <div class="bg-gradient-to-br from-blue-100 to-purple-100 text-gray-800 relative z-30 py-16 px-4 sm:px-6 lg:px-8 sm:py-24 lg:py-32 mt-16">
+<div class="bg-white py-8 px-4" x-data="{ openModal: null }">
     <div class="max-w-7xl mx-auto">
-        <div class="text-center mb-16">
-            <h1 class="text-5xl font-bold mb-4 text-purple-800 animate-pulse">
-                {{ $contentData[0]['title'] }}
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-bold text-purple-800 mb-4">
+                Mengapa Harus Belajar
             </h1>
-            <p class="text-xl text-gray-600">Temukan keunggulan belajar bersama kami</p>
+            <h2 class="text-4xl font-bold text-purple-800 mb-4">
+                di New Primagama Fatmawati
+            </h2>
+            <div class="inline-block bg-purple-800 text-white px-8 py-2 rounded-lg text-lg bayangan">
+                Temukan keunggulan belajar bersama kami
+            </div>
         </div>
 
-        <div class="space-y-24">
-            @foreach($contentData as $index => $data)
-                @if($index > 0) <!-- Skip the first item as it's the title -->
-                    <div class="bg-white rounded-xl shadow-2xl overflow-hidden transform hover:scale-105 transition-all duration-300" ="{{ $data['aosText'] }}">
-                        <div class="md:flex">
-                            <div class="md:w-1/3 bg-gradient-to-br from-purple-500 to-indigo-600 text-white p-6 flex items-center justify-center">
-                                <img src="{{ $data['imgSrc'] }}" alt="{{ $data['imgAlt'] }}" class="w-40 h-40 object-cover rounded-full border-4 border-white shadow-lg" />
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            @foreach ($contentData as $index => $feature)
+                @if($index > 0)
+                    <div class="relative group" x-data="{ isOpen: false }">
+                        {{-- Card Container --}}
+                        <div class="bg-pink-50 rounded-2xl p-6 shadow-lg transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl bayangan border-r-2 border-b-2 border-purple-600">
+                            {{-- Image Container --}}
+                            <div class="flex justify-center mb-4 bg-orange-50 rounded-lg border-r-2 border-b-2 border-t-2 border-l-2 border-purple-600 ">
+                                <div class="w-32 h-32 rounded-lg overflow-hidden">
+                                    <img src="{{ $feature['imgSrc'] }}" alt="{{ $feature['imgAlt'] }}" class="w-full h-full object-cover">
+                                </div>
                             </div>
-                            <div class="md:w-2/3 p-8">
-                                <h2 class="text-3xl font-bold mb-4 text-purple-700">{{ $data['heading'] }}</h2>
-                                <p class="text-lg text-gray-600 mb-6">{{ $data['text'] }}</p>
-                                <button class="bg-purple-600 text-white px-6 py-2 rounded-full hover:bg-purple-700 transition-colors duration-300" onclick="showMore('{{ $data['id'] }}')">Pelajari Lebih Lanjut</button>
+                            
+                            {{-- Content Container --}}
+                            <div class="text-center">
+                                {{-- Title Badge --}}
+                                <div class="bg-amber-400 text-black px-4 py-2 rounded-full mb-4 inline-block text-sm font-medium shadow-md relative bottom-10">
+                                    {{ $feature['heading'] }}
+                                </div>
+                                
+                                {{-- Description --}}
+                                <p class="text-gray-600 text-sm mb-4 px-2">
+                                    {{ $feature['text'] }}
+                                </p>
+                                
+                                {{-- Button --}}
+                                <button 
+                                    @click="openModal = {{ $feature['id'] }}"
+                                    class="bg-purple-800 text-yellow-500 border border-yellow-500 px-8 py-1.5 rounded-full text-sm font-medium hover:bg-purple-800 transition-colors shadow-md">
+                                    LIHAT
+                                </button>
                             </div>
                         </div>
-                        <div id="more-{{ $data['id'] }}" class="hidden p-6 bg-purple-50 border-t border-purple-100">
-                            <p class="text-gray-700">Informasi tambahan tentang {{ $data['heading'] }} akan ditampilkan di sini. Anda dapat menambahkan detail lebih lanjut, testimoni, atau tautan terkait untuk memberikan informasi yang lebih komprehensif kepada calon siswa.</p>
-                        </div>
+                        
+                        {{-- Border Decoration --}}
+                        <div class="absolute inset-0 -z-10 translate-x-2 translate-y-2 rounded-2xl border-2 border-amber-400"></div>
                     </div>
                 @endif
             @endforeach
         </div>
     </div>
+
+    {{-- Modal untuk detail informasi --}}
+    <template x-for="feature in $data.features" :key="feature.id">
+        <div 
+            x-show="openModal === feature.id" 
+            @click.away="openModal = null"
+            x-cloak
+            class="fixed inset-0 z-50 overflow-y-auto"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0">
+            
+            <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
+                <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"></div>
+
+                <div class="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                    <div class="absolute top-0 right-0 pt-4 pr-4">
+                        <button 
+                            @click="openModal = null" 
+                            class="text-gray-400 hover:text-gray-500">
+                            <span class="sr-only">Close</span>
+                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="mt-3 text-center sm:mt-0 sm:text-left">
+                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4" x-text="feature.heading"></h3>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-500" x-text="feature.text"></p>
+                        </div>
+                        <div class="mt-4">
+                            <h4 class="font-medium text-gray-900 mb-2">Informasi Tambahan:</h4>
+                            <ul class="list-disc list-inside text-sm text-gray-500">
+                                <template x-if="feature.id === 2">
+                                    <div>
+                                        <li>Akses 24/7 ke seluruh konten premium</li>
+                                        <li>Video pembelajaran interaktif</li>
+                                        <li>Bank soal lengkap</li>
+                                        <li>Progress tracking</li>
+                                    </div>
+                                </template>
+                                <!-- Tambahkan informasi tambahan untuk fitur lainnya -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</div>
+
+
+<style>
+    [x-cloak] {
+        display: none !important;
+    }
+    
+    .group:hover .rounded-2xl {
+        transform: translateY(-4px);
+    }
+    
+    .group:hover .absolute {
+        transform: translate(10px, 10px);
+        transition: all 0.3s ease;
+    }
+
+    .bayangan{
+        box-shadow: 6px 6px 0px 0px #FFE700;
+    }
+    .bayangan2{
+        box-shadow: 8px 8px 0px 0px #7A1CAC;
+
+    }
+</style>
+
 
     <!-- Decorative elements -->
     <div class="absolute top-10 left-10 w-20 h-20 bg-yellow-300 rounded-full opacity-20 animate-pulse"></div>
@@ -173,63 +276,74 @@
     <div class="absolute top-1/2 left-1/4 w-16 h-16 bg-green-300 rounded-full opacity-20 animate-pulse"></div>
 </div>
 
-    <!-- Learning Components Section -->
-<div class="bg-gradient-to-r from-purple-100 to-blue-100 py-16 mt-16">
+<div class="bg-gradient-to-r from-purple-100 to-blue-100 py-16">
     <div class="container mx-auto px-4">
-        <h2 class="text-4xl font-bold text-center mb-12 text-purple-800">Komponen Belajar</h2>
+        <h1 class="text-4xl font-bold text-center mb-12 text-purple-800">Komponen Belajar</h1>
+        
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8">
-            @foreach ($komponenBelajar as $item)
-                <div key="{{ $item['id'] }}" class="flex flex-col items-center transform hover:scale-105 transition-all duration-300">
-                    <div class="bg-white p-4 rounded-full shadow-lg mb-4">
+            @foreach($komponenBelajar as $item)
+                <div class="bg-pink-50 rounded-lg flex flex-col items-center transform hover:scale-105 transition-all duration-300 bayangan2 border-2 border-purple-800">
+                    <div class=" mb-2 w-32 h-32 flex items-center justify-center">
                         <img 
                             src="{{ asset($item['imgSrc']) }}" 
                             alt="{{ $item['imgAlt'] }}" 
-                            class="w-24 h-24 object-cover rounded-full" 
+                            class="w-28 h-28 object-contain"
                         />
                     </div>
-                    <h3 class="text-lg font-medium text-center text-purple-700">{{ $item['title'] }}</h3>
+                    <h3 class="text-sm font-medium text-center text-black p-5">
+                        {{ $item['title'] }}
+                    </h3>
                 </div>
             @endforeach
         </div>
     </div>
 </div>
 
-<h2 class="text-4xl font-bold text-center mb-12 text-purple-800 mt-16">Ulasan Siswa</h2>
-@if($ulasan->isNotEmpty())
-    <div class="bg-gradient-to-r from-purple-100 to-blue-100 py-16 mt-16">
+{{-- resources/views/components/student-testimonials.blade.php --}}
+<div class="bg-[#FFD700] p-8">
+    <h2 class="text-center text-2xl font-bold mb-8">KATA SISWA</h2>
+    
+    @if($ulasan->isNotEmpty())
         <div class="container mx-auto px-4">
-            <div class="slider"> <!-- Use the slider class here -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
                 @foreach($ulasan as $review)
-                    <div class="flex flex-col items-center transform hover:scale-105 transition-all duration-300 rounded-lg shadow-lg bg-white p-6 m-4">
-                        <div class="flex items-center justify-center bg-purple-200 p-4 rounded-full shadow-md mb-4">
-                            <img 
-                                src="{{ asset('/storage/foto_profile/' . $review->foto_profile) }}" 
-                                alt="{{ $review->nama_pemberi_ulasan }}" 
-                                class="w-24 h-24 object-cover rounded-full" 
-                            />
+                    <div class="bg-white rounded-lg p-4 shadow-md">
+                        <div class="flex items-start space-x-3">
+                            <div class="flex-shrink-0 ">
+                                <img 
+                                    src="{{ asset('/storage/foto_profile/' . $review->foto_profile) }}" 
+                                    alt="{{ $review->nama_pemberi_ulasan }}" 
+                                    class="w-12 h-12 rounded-full object-cover border border-purple-600"
+                                />
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">{{ $review->nama_pemberi_ulasan }}</h3>
+                                <div class="flex items-center space-x-1 my-1">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        <svg class="w-4 h-4 {{ $i <= $review->penilaian ? 'text-yellow-400' : 'text-gray-300' }}" 
+                                             fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                        </svg>
+                                    @endfor
+                                </div>
+                                <p class="text-gray-600">Bimbel Keren, Mantap!!!</p>
+                            </div>
                         </div>
-                        <h3 class="text-lg font-semibold text-center text-purple-800 mb-1">{{ $review->nama_pemberi_ulasan }}</h3>
-                        <h5 class="text-sm text-gray-500 mb-2 text-center">{{ $review->tipe_pemberi_ulasan }}</h5>
-                        <div class="star-rating flex justify-center mb-2">
-                            @for($i = 1; $i <= 5; $i++)
-                                <span class="star text-lg {{ $i <= $review->penilaian ? 'text-yellow-500' : 'text-gray-300' }}">★</span>
-                            @endfor
-                        </div>
-                        <p class="text-gray-700 text-center comment-preview mb-4" id="comment-preview-{{ $review->id }}" style="transition: height 0.3s ease; overflow: hidden;">
-                            {{ Str::limit($review->komentar, 100) }}...
-                            <span class="hidden comment-full" id="comment-full-{{ $review->id }}">{{ $review->komentar }}</span>
-                        </p>
-                        <button class="text-blue-500 hover:underline mt-2 see-more" data-comment-id="{{ $review->id }}">
-                            Lihat Selengkapnya
-                        </button>
                     </div>
                 @endforeach
             </div>
+            
+            <div class="text-center mt-4">
+                <button class="text-gray-600 hover:text-gray-800">
+                    Lihat lebih banyak
+            </div>
         </div>
-    </div>
-@else
-    <p class="text-center text-gray-500">Tidak ada ulasan yang tersedia.</p>
-@endif
+    @else                </button>
+
+        <p class="text-center text-gray-500">Tidak ada ulasan yang tersedia.</p>
+    @endif
+</div>
+
 <!-- Contact Section -->
 <div id="contact" class="bg-gradient-to-br from-purple-600 to-indigo-800 py-16 relative z-20 mt-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
